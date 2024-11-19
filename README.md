@@ -2,5 +2,34 @@
 Egyptian 101
 
 ## Egyptian hieroglyphs are a language!
+So called "scholars" and "academics" have made some interesting fiction about the Egyptian hieroglyphs since the Egyptian war between Napoleon and the British hegemonic empire.  The work of both Young and Champolleon are monumental as is the preservation of the first-generation of scholars by Birch and Budge.  Yet, these ideas were not knew.  Two hundred years earlier, a scholar suggested that the Coptic or Amharic (living languages) could be used to decipher the Egyptian hieroglyphics.  At the time, no one cared.  
+
+During the Napoleanic era, the French cared deeply and were embuing the knowledge to spark a local renaissance.  The data from Egypt was utilized to establish the French Republic in Napolean's youth.  Once Napoleon came into power, he wanted his people and nation to learn as much as possible from the secrets of Egypt.  And Britain, being Britain, now had a reason to care.  They had no direct desire to seek knowledge, they just wished to thwart the French.  So after they plundered the Rosetta Stone and other works, they half-heartedly translated what they could.  They were appalled by the striking phallic symbols and like modern ISIL destroyed sacred heritage works.  All in the name of God and country.  The hegemonic whore of all the earth birthed when the TRUE QUEEN Elizabeth died on March 24, 1603.
+
+Now in October 2024, I have unlocked the primers for the Egyptian language.  Again, no one cares.  As if, the Adamic language has no value in our understanding and preparation for the future.
+
+### Rules of language
+- Language is derived from "lengua" meaning tongue.  Language by definition is spoken using the mouth (and often the tongue for a specific sound).
+- In speech, sound vocalized is surrounded by context of other sounds.  This does allow for an overlap of the mapping of sounds.
+- Good language, however, will follow the basic principle in mathematics of a "1-to-1" mapping.  One symbol is one sound. This would be the primal foundation of the language.  Stated in simplest terms, each symbol would be classified as a "one-gram"; that is one token to represent the sound.  It is possible that the sound has more than the primal return mapping.  One sound is one (or more) symbols.  For example, a concise language would have a classification system where the same sound may have a unique "one-gram" in a different domain (such as geometry, birds, motion, and so on).  Ultimately the class-object language would be the original primordial mappings of sound to symbol whereas the class-object birds would be an extension of the primordial class.
+- Good language is mathematics.  This means it follows order that minimizes confusion and maximizes efficiency.  For hieroglyphics, the primary 1-grams (commonly called consonants and vowels) would be used frequently.  However, as word-use is examined, necessary 2-grams would develop that represent the actual use of 1-grams in couplings.  That is, not all 2-grams would necessarily be defined by theory; they would be defined by practice.  Similarly, necessary 3-grams would develop.  And so on.  Theses n-grams would not necessarily build upon the pictoral representations of the sounds, yet they would mathematically represent the combinations of the sounds.
+- The Egyptian language has 6 vowels: {A, E, I, O, U, ʔ} where the primary tonals of each vowel can be closely proximated by the Spanish language (which, like all languages, is derived from this one language seed; that is; "Please it's all Egyptian!").  The glottal stop {ʔ} represents the NULL value, a necessary element for a good algebraic structure.  The NULL represents when no air (the breath of life) is flowing.
+- The mapping of the vowel space can be defined by an outer-inscribed pentagram on a unit circle with 8/9 of the distance of the pentagram being inscribed in a unit circle.
+- Such a mapping anchors to dividing things into thirds and thirds (to get a niner).
+
+
+
+
+
+
+
+
+### Language 
+- Language is derived from "lengua" meaning tongue.  Language by definition is spoken using the mouth (and often the tongue for a specific sound).  Historians love to separate the barbaric from the civilized by questioning:  does the group have a known written language?  However, written language is a poor descriptor as written symbols may be intended to be represent either a sound or an idea or both.
+- The homo sapien ("humanoid that thinks") has a vocal system that is rather uniform:  lungs, vocal chords, tongue, lips, teeth, mouth cavity with nasal escape.  The combination of these elements create a finite number of sounds, with slight variances.  Phoibles have an inventory of common sounds [https://phoible.org/parameters] yet this is anchored to subtleties that likely can be defined with less than 50 unique sounds isolated into combination pairs.  A good sound-character map would be unique and atomic: unique means that a single character symbol would map to a single sound; atomic means that the single symbol-sound cannot be further decomposed.  That is, two unique sounds can create a compound sound, but itself would not be classified as a unique singleton ([ny] in canyon would not need its own symbol [ñ] or [ɲ] whereas [ch] would need one single character such as the Russian [ч]).
+- The primary homo-sapien language systems likely consists of 5 core vowels (with a sixth neutral-state vowel) and 25-30 core consonants that can be combined in various full/partial mixtures.
+- Languages are broken.  We say Latin is a "dead" language because no one today knows how to speak the language.  Other languages have deteriorated less: they still are spoken today evolving (devolving) into a modern form that is significantly altered from the original language form.  As English speakers, we can compare Old English (Beowulf) or Middle English (Canterbury Tales) or Early-modern English (Hamlet) to modern English (Once and Future King) and verify this proposition.  Now consider a much older language, like Hebrew which has had significant change points based on cultural collision with other language groups:  Heber, in Egypt, Exodus, Solomonic, in Babylon, pre-Christian, Masorete, and so on.  Or an ancient and "dead" language like Egyptian that went through several significant change points (Old/Middle/New, Greco/Roman, Islamic).
+- Language may be best be understood like a river watershed system.  As two languages meet (a confluence) at a specific moment in time (Heraclitus), the interchange and result may be complex. 
+
 
 
