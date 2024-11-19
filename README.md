@@ -11,9 +11,9 @@ Yet, the remnants of the evolution of subset languages allow for the primary lan
 
 Consider for example the word 'mathematics': this is one anchor word that can be used to reconstruct the ancient language.
 
-In English:  "mathematics"
-In Spanish: "matemática"
-In Champollion Egyptian: "maati maati kham" (the virtue and truth of number; likely not additive {summation} but rather multiplicative in a simple {product} or compound {cross product} form)
-TRUE Egyptian, the Adamic language: ??? [Proceed dear reader, and you will discuss this for yourself!]
+- In English:  "mathematics"
+- In Spanish: "matemática"
+- In Champollion Egyptian: "maati maati kham" (the virtue and truth of number; likely not additive {summation} but rather multiplicative in a simple {product} or compound {cross product} form)
+- TRUE Egyptian, the Adamic language: ??? [Proceed dear reader, and you will discuss this for yourself!]
 
 ENJOY THE RIDE!
