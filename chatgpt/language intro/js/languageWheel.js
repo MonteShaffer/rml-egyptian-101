@@ -264,44 +264,34 @@
         }
       }
 
-      // -------------------------------
+// -------------------------------
 // Monad E (rotated ellipse + label)
-// One vertex at origin, one at (R/3, 10°)
-// Vertical height = R/3
+// Vertically R/3 tall, horizontally R/9 wide
+// Oriented along 10°
 // -------------------------------
 if (settings.showMonadE) {
-  const a = radius / 6;   // semi-major axis (half of R/3)
-  const b = radius / 6;   // semi-minor axis (vertical height / 2)
-  const theta = 10;       // degrees
+  const theta = 10;               // degrees
+  const rx = radius / 18;         // horizontal width = R/9
+  const ry = radius / 6;          // vertical height = R/3
 
-  // vertex at origin (center of wheel)
-  const v1 = { x: cx, y: cy };
+  // Place the ellipse center along the 10° ray.
+  // (Using R/6 keeps it close to your prior "north-ish" intent while scaling cleanly.)
+  const cE = polarToXY(cx, cy, radius / 6, theta);
+  const ex = cE.x;
+  const ey = cE.y;
 
-  // second vertex at R/3 along 10°
-  const v2 = polarToXY(cx, cy, radius / 3, theta);
-
-  // ellipse center = midpoint of vertices
-  const ex = (v1.x + v2.x) / 2;
-  const ey = (v1.y + v2.y) / 2;
-
-  // rotated ellipse
   gGeom.appendChild(
     svgEl("ellipse", {
       cx: ex,
       cy: ey,
-      rx: a,
-      ry: b,
+      rx: rx,
+      ry: ry,
       transform: `rotate(${theta} ${ex} ${ey})`,
       class: "lw-monad-ellipse"
     })
   );
 
-  // label at ellipse center
-  const te = svgEl("text", {
-    x: ex,
-    y: ey,
-    class: "lw-monad-label"
-  });
+  const te = svgEl("text", { x: ex, y: ey, class: "lw-monad-label" });
   te.textContent = "E";
   addTitle(te, `E: ${defText("E")}`);
   gLabels.appendChild(te);
