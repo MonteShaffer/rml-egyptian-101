@@ -43,27 +43,32 @@ body {
   stroke: rgba(0,0,0,0.35);
   stroke-width: 1.5;
   fill: none;
+  opacity: 0.4;
 }
 
 .lw-inner-circle-1third {
   stroke: rgba(0,0,0,0.18);
   stroke-width: 1.5;
   fill: none;
+  opacity: 0.03;
 }
 
 .lw-radial {
   stroke: rgba(0,0,0,0.55);
   stroke-width: 2;
+   opacity: 0.3;
 }
 
 .lw-tickdot {
   fill: #d33;
+   opacity: 0.03;
 }
 
 .lw-pentagram {
   stroke: rgba(120,0,140,0.75);
   stroke-width: 2;
   fill: none;
+  opacity: 0.3;
 }
 
 .lw-monad-ellipse {
