@@ -1,70 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Language Wheel</title>
+
   <link rel="stylesheet" href="css/languageWheel.css" />
-</head>
-<body>
-
-  <div id="wheel"></div>
-
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="js/languageWheel.js"></script>
+</head>
+
+<body>
+  <div class="lw-app">
+    <div id="wheel" class="lw-container"></div>
+  </div>
 
   <script>
     $(function () {
       $("#wheel").languageWheel({
-        unitRadiusPx: 300,
-        svgPadFactor: 0.10,
+        radiusPx: 300,
+        paddingFactor: 0.10,
 
+        // show/hide wheel classes
         showClasses: {
           primalVowels: true,
-          monad: true,
+          stressVowels: false,
+          blendVowels: false,
           consonants: true,
           clicks: false
         },
 
-        consonants: [
-          { label: "L", thetaDeg: -11 },
+        // geometry
+        showCenterLines: true,
+        showInnerCircles: true,
+        showRadials: true,
+        showPentagram: true,
 
-          { label: "D", thetaDeg: 10 },
-          { label: "N", thetaDeg: 20 },
-          { label: "T", thetaDeg: 30 },
-          { label: "R", thetaDeg: 40 },
-
-          { label: "S",  thetaDeg: 65 },
-          { label: "ch", thetaDeg: 80 },
-          { label: "th", thetaDeg: 95 },
-          { label: "sh", thetaDeg: 110 },
-
-          { label: "M", thetaDeg: 130 },
-          { label: "B", thetaDeg: 140 },
-          { label: "V", thetaDeg: 150 },
-          { label: "P", thetaDeg: 160 },
-          { label: "W", thetaDeg: 170 },
-          { label: "F", thetaDeg: 180 },		  
-		  
-          { label: "Y",  thetaDeg: 200 },
-
-          { label: "K", thetaDeg: 260 },
-          { label: "G", thetaDeg: 270 },
-
-          { label: "H",  thetaDeg: 285 },
-          { label: "zh", thetaDeg: 300 },
-          { label: "J",  thetaDeg: 315 },
-          { label: "Z",  thetaDeg: 330 }
-
-        ],
-
-        clicks: [
-          { label: "ǁ", thetaDeg: -5 },
-          { label: "ǀ", thetaDeg: 30 },
-          { label: "ʘ", thetaDeg: 150 }
-        ]
+        // definitions UI
+        showDefinitionsPanel: true
       });
     });
   </script>
-
 </body>
 </html>
