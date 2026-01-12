@@ -297,6 +297,52 @@ if (settings.showMonadE) {
   gLabels.appendChild(te);
 }
 
+
+
+
+
+// -------------------------------
+// Stressed AE (ellipse + label)
+// Vertex 1: V1 = polar(R/3, 10°)  (touches E vertex)
+// Vertex 2: V2 = polar(R,   20°)  (outer boundary)
+// Height:  2R/3  => ry = R/3
+// Width:   R/3   => rx = R/6
+// -------------------------------
+if (settings.showStressedAE) {
+  const v1 = polarToXY(cx, cy, radius * (1 / 3), 10);
+  const v2 = polarToXY(cx, cy, radius * 1.0, 20);
+
+  // Ellipse center is midpoint between the two vertices
+  const ax = (v1.x + v2.x) / 2;
+  const ay = (v1.y + v2.y) / 2;
+
+  // Rotate ellipse to align with the axis from v1 -> v2
+  const angleRad = Math.atan2(v2.y - v1.y, v2.x - v1.x);
+  const angleDeg = (angleRad * 180) / Math.PI;
+
+  // Size per spec
+  const ry = radius / 6;   // width  = R/3
+  const rx = radius / 3;   // height = 2R/3
+
+  gGeom.appendChild(
+    svgEl("ellipse", {
+      cx: ax,
+      cy: ay,
+      rx: rx,
+      ry: ry,
+      transform: `rotate(${angleDeg} ${ax} ${ay})`,
+      class: "lw-ae-ellipse"
+    })
+  );
+
+  const tAE = svgEl("text", { x: (v1.x + 2*v2.x) / 3, y: (v1.y + 2*v2.y) / 3, class: "lw-ae-label" });
+  tAE.textContent = "Æ";
+  addTitle(tAE, `Æ: ${defText("AE")}`);
+  gLabels.appendChild(tAE);
+}
+
+
+
       // -------------------------------
       // Consonants on 2/3 radius ring
       // -------------------------------

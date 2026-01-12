@@ -57,7 +57,6 @@
 
     showClasses: {
       primalVowels: true,
-      stressVowels: false,
       blendVowels: false,
       consonants: true,
       clicks: false
@@ -68,6 +67,7 @@
     showRadials: true,
     showPentagram: true,
     showMonadE: true,
+	showStressedAE: true,
     showDefinitionsPanel: true,
 
     primalVowelStartTheta: -22,

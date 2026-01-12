@@ -77,6 +77,28 @@ body {
   fill: rgba(31,95,191,0.08);
 }
 
+.lw-monad-label {
+  fill: #1f5fbf;
+  font-size: 36px;
+  font-weight: 800;
+  dominant-baseline: middle;
+  text-anchor: middle;
+  user-select: none;
+}
+
+.lw-ae-ellipse {
+  stroke: #c23;
+  stroke-width: 2;
+  fill: rgba(200, 30, 60, 0.10);
+}
+
+.lw-ae-label {
+  fill: #c23;
+  font-size: 36px;
+  font-weight: 800;
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
 /* ---------- labels ---------- */
 
 .lw-label {
@@ -88,14 +110,7 @@ body {
   user-select: none;
 }
 
-.lw-monad-label {
-  fill: #1f5fbf;
-  font-size: 36px;
-  font-weight: 800;
-  dominant-baseline: middle;
-  text-anchor: middle;
-  user-select: none;
-}
+
 
 .lw-consonant-label {
   fill: #444;
