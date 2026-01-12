@@ -1,0 +1,116 @@
+/* css/languageWheel.css */
+
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fdf6e3;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+.lw-container {
+  position: relative;
+  overflow: visible;
+}
+
+.lw-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- geometry ---------- */
+
+.lw-centerline {
+  stroke: #333;
+  stroke-width: 1;
+  stroke-dasharray: 6 6;
+  opacity: 0.5;
+}
+
+.lw-center-dot {
+  fill: #111;
+}
+
+.lw-inner-circle-2thirds {
+  stroke: rgba(0,0,0,0.35);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.lw-inner-circle-1third {
+  stroke: rgba(0,0,0,0.18);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.lw-radial {
+  stroke: rgba(0,0,0,0.55);
+  stroke-width: 2;
+}
+
+.lw-tickdot {
+  fill: #d33;
+}
+
+.lw-pentagram {
+  stroke: rgba(120,0,140,0.75);
+  stroke-width: 2;
+  fill: none;
+}
+
+.lw-monad-ellipse {
+  stroke: #1f5fbf;
+  stroke-width: 2;
+  fill: rgba(31,95,191,0.08);
+}
+
+/* ---------- labels (shared) ---------- */
+/* Make SVG text non-selectable and add a halo so labels remain readable over lines */
+.lw-label,
+.lw-monad-label,
+.lw-consonant-label,
+.lw-click-label {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  cursor: default;
+
+  /* Halo / outline behind text */
+  paint-order: stroke;
+  stroke: #fdf6e3;        /* match page background */
+  stroke-width: 6px;      /* tune 4–8px if desired */
+  stroke-linejoin: round;
+
+  dominant-baseline: middle;
+  text-anchor: middle;
+}
+
+/* ---------- labels (individual) ---------- */
+
+.lw-label {
+  fill: #111;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.lw-monad-label {
+  fill: #1f5fbf;
+  font-size: 36px;
+  font-weight: 800;
+}
+
+.lw-consonant-label {
+  fill: #444;
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.lw-click-label {
+  fill: #666;
+  font-size: 30px;
+  font-weight: 700;
+}
