@@ -125,10 +125,12 @@
 
     // consonant ring positions on 2/3 radius
     consonants: [
+	{ token: "R", theta: -10 },
+	{ token: "L", theta: 0 },   
       { token: "D", theta: 10 },   // hand
-      { token: "N", theta: 20 },
-      { token: "T", theta: 30 },
-      { token: "R", theta: 40 },
+      { token: "N", theta: 22 },
+      { token: "T", theta: 34 },
+      
 
       { token: "S",  theta: 65 },
       { token: "ch", theta: 80 },
