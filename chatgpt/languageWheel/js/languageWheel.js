@@ -310,7 +310,7 @@ if (settings.showMonadE) {
 // -------------------------------
 if (settings.showStressedAE) {
   const v1 = polarToXY(cx, cy, radius * (1 / 3), 10);
-  const v2 = polarToXY(cx, cy, radius * 1.0, 20);
+  const v2 = polarToXY(cx, cy, radius * 1, 20);
 
   // Ellipse center is midpoint between the two vertices
   const ax = (v1.x + v2.x) / 2;
@@ -335,7 +335,7 @@ if (settings.showStressedAE) {
     })
   );
 
-  const tAE = svgEl("text", { x: (v1.x + 2*v2.x) / 3, y: (v1.y + 2*v2.y) / 3, class: "lw-ae-label" });
+  const tAE = svgEl("text", { x: (v1.x + 4*v2.x) / 5, y: (v1.y + 4*v2.y) / 5, class: "lw-ae-label" });
   tAE.textContent = "Æ";
   addTitle(tAE, `Æ: ${defText("AE")}`);
   gLabels.appendChild(tAE);
