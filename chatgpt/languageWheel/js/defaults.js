@@ -3,50 +3,53 @@
   "use strict";
 
   // -------------------------------
-  // Primal semantic definitions
-  // -------------------------------
-  const PRIMAL_DEFINITIONS = {
-    vowels: {
-      A: "Up / ascent; celestial/soul contextually (not always).",
-      E: "Monad; center / reference point (constructed center).",
-      I: "Water / fluid domain (incl. bodily fluids by context).",
-      O: "Depth / profoundness (quality of deepness).",
-      U: "Slope / gradient (up or down).",
-      "ʔ": "NULL / intentional stop; boundary control operator (glottal stop).",
-      AE: "(definition pending)",
-      "ə": "(definition pending)"
-    },
-    consonants: {
-      R: "Manifestation (making internal → external / perceivable).",
-      L: "Continuity (unbroken persistence / carry-through).",
-      T: "Horizon / infinite line; plane/boundary reference.",
-      N: "Interface / meeting place between elements.",
-      S: "Make / set / assert (to make it so).",
-      M: "Turning (modulation / reversal / internal circulation).",
-      G: "Bounded resistance / obstruction (hard stop).",
-      K: "Unbounded / infinite-scale operator (beyond finitude).",
-      H: "Breath (the breathing sound/operator).",
-      B: "Foot / grounding (earth-bound contact).",
-      D: "Hand (above; heavenly side in axis mapping).",
-      V: "Bottom of a thing (lower extremity; proximate to foot domain).",
-      Y: "Directed force / focused agency (strike/aimed motion).",
-      P: "Class / membership operator (class object).",
+// Primal semantic definitions (current synthesis)
+// -------------------------------
+const PRIMAL_DEFINITIONS = {
+  vowels: {
+    A: "Ascent / rising toward coherence; upward movement that may imply order or organization depending on context.",
+    E: "Monad; constructed center or reference point; requires muscular tension and serves as a relational anchor.",
+    I: "Water / fluid domain; life-flow medium (rivers, bodily fluids, circulation by context).",
+    O: "Depth / profoundness; degree of inwardness or intensity of a domain.",
+    U: "Outward gradient into the temporal and earthly; instability, disorder, slope, or divergence from center.",
+    "ʔ": "NULL operator; intentional stop or absence (not zero); boundary where something is withheld or terminated.",
+    AE: "Distressed ascent; strained or forced emergence from the center (crying, pain, exertion).",
+    "ə": "Reduced or neutralized vowel; weakened center under gravitational pull of surrounding sounds."
+  },
 
-      ch: "(definition pending)",
-      th: "(definition pending)",
-      sh: "(definition pending)",
-      zh: "(definition pending)",
-      J: "(definition pending)",
-      Z: "(definition pending)",
-      W: "(definition pending)",
-      F: "(definition pending)"
-    },
-    clicks: {
-      "ʘ": "(definition pending)",
-      "ǁ": "(definition pending)",
-      "ǀ": "(definition pending)"
-    }
-  };
+  consonants: {
+    R: "Manifestation; making something internal or latent externally perceivable or realized.",
+    L: "Continuity; sustained extension, smooth persistence, or calming carry-through.",
+    T: "Plane / horizon; infinite line or surface defining a boundary or level of reference.",
+    N: "Interface operator; negotiates or mediates between what lies to its left and right.",
+    S: "Make / enact / assert; to cause something to occur or be established.",
+    M: "Turning; modulation, internal circulation, reversal, or oscillation of a process.",
+    G: "Bounded resistance; hard constraint, obstruction, or stopping force.",
+    K: "Unbounded or infinite force; scale beyond finitude, overwhelming or limitless extension.",
+    H: "Breath; baseline life-energy and respiration without applied force.",
+    B: "Foot; grounding, contact with earth, physical support or base.",
+    D: "Hand; agency above the horizon, action taken from a higher or guiding position.",
+    V: "Bottom or lower extremity; base point or lowest functional part of a thing.",
+    Y: "Directed force; focused, aimed agency or intentional strike.",
+    P: "Class or membership operator; denotes category, grouping, or class-instance relation.",
+
+    ch: "Activated life-energy; vitality or animating force (chi-like), energized but not violent.",
+    th: "Tongue–teeth interface; grasping, tearing, or seizing action at a boundary.",
+    sh: "Emotional modulation; affective coloring of energy (joy, sorrow, attachment, feeling).",
+    zh: "Radiant or shimmering vitality; animated light or expressive energy (definition stabilizing).",
+   J: "Evaluative discernment; cognitive judgment that selects coherence from disorder.",
+    Z: "Light-from-above; radiant illumination, clarity, or revealed presence.",
+    W: "Flow or conveyance; carried motion or passage (definition stabilizing).",
+    F: "Administrative regulation; impartial bearing of duty, burden, or governance without judgment."
+  },
+
+  clicks: {
+    "ʘ": "Internalized closure; sealed or contained absence (definition stabilizing).",
+    "ǁ": "Parallel separation; dual-channel division or split pathway (definition stabilizing).",
+    "ǀ": "Singular cut or discrete boundary; isolated separation (definition stabilizing)."
+  }
+};
+
 
   // -------------------------------
   // Wheel defaults / geometry
