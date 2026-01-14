@@ -13,7 +13,7 @@ const PRIMAL_DEFINITIONS = {
     O: "Depth / profoundness; degree of inwardness or intensity of a domain.",
     U: "Outward gradient into the temporal and earthly; instability, disorder, slope, or divergence from center.",
     "ʔ": "NULL operator; intentional stop or absence (not zero); boundary where something is withheld or terminated.",
-    AE: "Distressed ascent; strained or forced emergence from the center (crying, pain, exertion).",
+    Æ: "Distressed ascent; strained or forced emergence from the center (crying, pain, exertion).",
     "ə": "Reduced or neutralized vowel; weakened center under gravitational pull of surrounding sounds."
   },
 
