@@ -8,17 +8,21 @@
 
 All spoken language begins with breath.
 
-Before there are letters, symbols, or writing systems, there is **breath**.  
-Air moves through the lungs, rises through the throat, and is shaped by the tongue, teeth, lips, and mouth. Sound is not abstract—it is **physical**.
+Before there are letters, symbols, or writing systems, there is **breath**. Air moves through the lungs, rises through the throat, and is shaped by the tongue, teeth, lips, and mouth. Sound is not abstract—it is **physical**.
+
+Egyptian is no exception to this biological reality. What distinguishes Egyptian is not that it uses sound, but that it **systematically organizes sound into a coherent, reusable model of reality**.
 
 ### From Breath to Sound
-Human sound production is governed by three primary factors:
-1.	Airflow — how air moves (continuous, interrupted, forced, relaxed)
-2.	Constriction — where the airflow is shaped (lips, teeth, tongue, throat)
-3.	Resonance — how the mouth cavity is shaped to amplify or modify sound
 
-These factors are universal. Every human language draws from the same physical apparatus. Differences between languages arise not from anatomy, but from which sound clusters are selected, emphasized, or avoided.
-This is why languages across the world share many sounds — and why some sounds appear far more frequently than others.
+Human sound production is governed by three primary physical factors:
+
+1. **Airflow** — how air moves (continuous, interrupted, forced, relaxed)
+2. **Constriction** — where airflow is shaped (lips, teeth, tongue, throat)
+3. **Resonance** — how the mouth cavity amplifies or modifies sound
+
+These constraints are universal. All human languages draw from the same anatomical apparatus. Differences between languages arise not from biology, but from **selection, emphasis, and clustering** of available sounds.
+
+This explains why languages across the world share many phonemes, and why certain sounds appear with much higher frequency than others.
 
 
 
@@ -50,41 +54,43 @@ Based on PHOIBLE’s comprehensive data, here are the top most common phonemes a
 
 Percentages are approximate, derived from PHOIBLE aggregate inventories, and intended to show relative frequency, not exact counts.
 
-Representation	Our Symbol	IPA Symbol	Sound Descriptor
-96%	M 	/m/	Bilabial nasal
-92%	I 	/i/	Close front vowel
-90%	K 	/k/	Voiceless velar plosive
-90%	Y 	/j/	Palatal approximant
-88%	U 	/u/	Close back vowel
-86%	A 	/a/	Open vowel
-86%	P 	/p/	Voiceless bilabial plosive
-82%	W 	/w/	Labial–velar approximant
-78%	N 	/n/	Alveolar nasal
-68%	T 	/t/	Voiceless alveolar plosive
-68%	L 	/l/	Alveolar lateral approximant
-67%	S 	/s/	Voiceless alveolar fricative
-63%	B 	/b/	Voiced bilabial plosive
-61%	(EI) 	/e/	Close-mid front vowel
-60%	O 	/o/	Close-mid back rounded vowel
-57%	G 	/g/	Voiced velar plosive
-56%	H 	/h/	Voiceless glottal fricative
-52%	(AO)	/ɔ/	Open-mid back rounded vowel
-46%	D 	/d/	Voiced alveolar plosive
-46%	(th) 	/θ/	Voiceless dental fricative
-44%	(th) 	/ð/	Voiced dental fricative
-44%	R 	/r/	Rhotic (trill/tap/approximant)
-44%	F 	/f/	Voiceless labiodental fricative
-42%	(zh) 	/ʒ/	Voiced postalveolar fricative
-40% (ch) 	/ʧ/	Voiceless postalveolar affricate
-40%	(Iʔ) 	/ɪ/	Near-close front vowel
-37%	ʔ 	/ʔ/	Glottal stop
-37%	E 	/ɛ/	Open-mid front vowel
-37%	(sh) 	/ʃ/	Voiceless postalveolar fricative
-30%	Z 	/z/	Voiced alveolar fricative
-27%	V 	/v/	Voiced labiodental fricative
-27% J 	/ʤ/	Voiced postalveolar affricate
-22%	(Aʔ) 	/ə/	Mid central vowel
-7%	Æ 	/æ/	Near-open front vowel
+| Representation | Our Symbol | IPA Symbol | Sound Descriptor                 |
+| --------: | ---------- | ---------- | -------------------------------- |
+|       96% | M          | /m/        | Bilabial nasal                   |
+|       92% | I          | /i/        | Close front vowel                |
+|       90% | K          | /k/        | Voiceless velar plosive          |
+|       90% | Y          | /j/        | Palatal approximant              |
+|       88% | U          | /u/        | Close back vowel                 |
+|       86% | A          | /a/        | Open vowel                       |
+|       86% | P          | /p/        | Voiceless bilabial plosive       |
+|       82% | W          | /w/        | Labial–velar approximant         |
+|       78% | N          | /n/        | Alveolar nasal                   |
+|       68% | T          | /t/        | Voiceless alveolar plosive       |
+|       68% | L          | /l/        | Alveolar lateral approximant     |
+|       67% | S          | /s/        | Voiceless alveolar fricative     |
+|       63% | B          | /b/        | Voiced bilabial plosive          |
+|       61% | (EI)       | /e/        | Close-mid front vowel            |
+|       60% | O          | /o/        | Close-mid back rounded vowel     |
+|       57% | G          | /g/        | Voiced velar plosive             |
+|       56% | H          | /h/        | Voiceless glottal fricative      |
+|       52% | (AO)       | /ɔ/        | Open-mid back rounded vowel      |
+|       46% | D          | /d/        | Voiced alveolar plosive          |
+|       46% | (th)       | /θ/        | Voiceless dental fricative       |
+|       44% | (th)       | /ð/        | Voiced dental fricative          |
+|       44% | R          | /r/        | Rhotic (trill/tap/approximant)   |
+|       44% | F          | /f/        | Voiceless labiodental fricative  |
+|       42% | (zh)       | /ʒ/        | Voiced postalveolar fricative    |
+|       40% | (ch)       | /ʧ/        | Voiceless postalveolar affricate |
+|       40% | (Iʔ)       | /ɪ/        | Near-close front vowel           |
+|       37% | ʔ          | /ʔ/        | Glottal stop                     |
+|       37% | E          | /ɛ/        | Open-mid front vowel             |
+|       37% | (sh)       | /ʃ/        | Voiceless postalveolar fricative |
+|       30% | Z          | /z/        | Voiced alveolar fricative        |
+|       27% | V          | /v/        | Voiced labiodental fricative     |
+|       27% | J          | /ʤ/        | Voiced postalveolar affricate    |
+|       22% | (Aʔ)       | /ə/        | Mid central vowel                |
+|        7% | Æ          | /æ/        | Near-open front vowel            |
+
 
 
 [https://phoible.org/parameters]
@@ -100,27 +106,30 @@ By understanding these fundamental sound-building blocks, we gain insight into h
 
 ### Toward a Unified Sound Framework
 
-The goal of this chapter is to reorganize sound space in a way that highlights:
-•	physical production,
-•	clustering behavior,
-•	and suitability for a unified language model.
-To do this, we introduce a sound wheel — a geometric representation of how sounds relate to one another based on airflow, mouth shape, and effort.
-This wheel captures much of what the IPA describes, but arranges it in a way that:
-•	emphasizes continuity,
-•	reduces categorical fragmentation,
-•	and prepares the ground for semantic meaning in later chapters.
+The purpose of this chapter is to reorganize sound space in a way that highlights:
 
+- physical production,
+- clustering behavior,
+- suitability for a unified, process-based language model.
 
+To accomplish this, we introduce a **sound wheel** — a geometric representation of sound relationships based on airflow, mouth shape, effort, and spatial orientation. While the International Phonetic Alphabet catalogs sounds categorically, the sound wheel emphasizes **continuity, direction, and geometric proximity**.
 
-In this chapter, we focus on **how sounds are formed**, how they cluster, and how Egyptian appears to have deliberately anchored sound to **geometry, direction, and domain**.
+This prepares the ground for semantic meaning in later chapters.  In this chapter, we focus on **how sounds are formed**, how they cluster, and how Egyptian appears to have deliberately anchored sound to **geometry, direction, and domain**.
 
 ---
 
 ## 2.1 Vowels as Domains of Experience
 
-Vowels exist in every spoken language. They are the most natural sounds humans produce, requiring minimal obstruction of airflow. In Egyptian, vowels function as **domain indicators**—they describe *where* an action occurs or *what kind of space* it inhabits.
+Vowels exist in every spoken language. They are the most natural sounds humans produce, requiring minimal obstruction of airflow.
 
-Rather than treating vowels as arbitrary phonetic elements, this model treats them as **foundational coordinates** in a conceptual space.
+In this model, vowels function as **domains**. They describe *where* an action occurs or *what kind of experiential space* it inhabits.
+
+Rather than treating vowels as arbitrary phonetic elements, we treat them as **foundational coordinates in conceptual space**.
+
+
+
+> **Figure 2.1** — *Human Vocal Tract and Primary Sound-Shaping Regions*  
+> *(Diagram showing airflow, tongue position, lips, teeth, and throat as physical constraints on sound production.)*
 
 ---
 
@@ -141,31 +150,67 @@ These vowels are:
 
 Their pronunciation is closest to **Spanish vowels**, not modern English ones.
 
-[insert sound wheel showing 5 vowels here]
-
-### The Primal Vowel Pentagram
-
-These five vowels are not arranged in a line, but in a **pentagram geometry**.  
-Each vowel occupies a distinct angular position, separated by 144° from its neighbors.
-
-The most “divine” vowel—**A**—is placed **22 degrees up and to the left** of true vertical. This orientation establishes the entire system.
-
-| Vowel | Domain              | Directional Character                          | Angle (θ) |
-| ----- | ------------------- | ---------------------------------------------- | --------- |
-| **A** | Ascent / order      | Upward and inward (ordering, celestial)        | **−22° (338°)**  |
-| **I** | Water / flow        | Outward and upward (life, relief)              | **50°**   |
-| **U** | Divergence / chaos  | Outward and downward (destabilizing emergence) | **122°**  |
-| **O** | Depth / internality | Inward and downward (latent, profound)         | **194°**  |
-| **ʔ** | NULL / stop         | Boundary / absence / arrest of motion          | **266°**  |
 
 
-This geometry is not symbolic; it reflects how these sounds are **felt and produced** in the body.
+> **Figure 2.2** — *Baseline Vowel Space (Unordered)*  
+> *(Simple schematic showing the five primal vowels as distinct regions prior to geometric ordering.)*
 
 ---
 
-## 2.3 The Glottal Stop (ʔ): The NULL Operator
 
-The **glottal stop** (ʔ) is the **stoppage of airflow** at the vocal cords.
+### A: Ascending toward coherence 
+
+A is the primary vowel of ascent, order, and elevation in the Egyptian sound model. At the level of meaning, A does not merely indicate “up” in a physical sense; it encodes the act of ascending toward coherence. It is the vowel of organization, alignment, and directed improvement. When A appears in a word, it signals that a process is moving toward structure rather than away from it, toward harmony rather than dispersion. Because of this, A is frequently associated with authority, kingship, law, and the ordering principles that govern both society and nature. It represents not chaos subdued, but chaos answered by form.
+
+Spatially, A occupies a privileged position on the vowel wheel. It is placed 22 degrees to the left of true vertical, slightly inward rather than directly above the center. This placement is deliberate and meaningful. Upward orientation marks its celestial character, while its inward bias reflects internalization and spiritual coherence rather than outward, temporal motion. A is not the highest point by accident—it is offset to show that perfection is not raw elevation but ordered ascent. Unlike U, which diverges outward and downward, A ascends while remaining tethered to an internal reference, ensuring stability as elevation occurs.
+
+The significance of A as a marker of divine perfection lies in its role as the ordering counter-force within the system. A does not negate divergence; it disciplines it. Where U permits disorder and entropy, A compels alignment and meaning. This is why A is associated with divine or ideal forms—not because it is mystical, but because it represents the principle by which complexity is organized into intelligible structure. In Egyptian terms, A describes the process by which the world becomes knowable, governable, and sustainable. It is the vowel of intentional elevation, the sound of order asserting itself against dispersion, and the foundation upon which coherence is built.
+
+---
+
+
+### I: Flowing forward almost theoretically
+
+**I** is the vowel of **water, flow, and life-sustaining movement**, but its meaning is inseparable from its **upward orientation**, which in this model represents the **ethereal or ideal dimension** rather than mere physical height. I does not describe water simply as a material substance; it describes water as a *principle of life*, an almost hypothetical necessity without which existence cannot be sustained. In this sense, I points to an ideal condition—life as it *should* flow—rather than only water as it *happens* to exist. When I appears in a word, it signals processes that orient toward vitality, renewal, and continuation, not through rigid structure but through adaptive, sustaining motion aligned with an ideal of life.
+
+Spatially, I occupies an **outward and upward** position on the vowel wheel. The outward direction places it in the temporal and external world, where life must interact with material conditions. The upward direction, however, lifts it toward the ethereal: water as hope, relief, and promise rather than mere liquid. This geometry reflects the lived experience of water in an arid environment—water is external and must be sought, yet it is mentally elevated as an almost sacred ideal. I is therefore neither inwardly contemplative like O nor centrally stabilizing like E; it is aspirational outflow, oriented toward an imagined state of well-being.
+
+The deeper significance of I lies in its role as a **bridge between the material and the ideal**. It represents movement toward life as a concept—health, continuity, and relief—rather than guaranteed stability. Unlike U, which moves outward and downward into disorder, I moves outward and upward toward an ethereal condition that sustains existence. In Egyptian terms, I encodes the understanding that life depends on continuous flow guided by an ideal orientation, even when the material world remains uncertain. It is the vowel of survival shaped by hope, motion guided by necessity, and life sustained by an ever-receding but essential ideal.
+
+
+---
+
+
+### U: Chaos of an entropic world
+
+**U** is the vowel of **divergence, dispersion, and uncontrolled emergence** in the Egyptian sound model. At the level of meaning, U represents the external world as it actually unfolds—unregulated, unstable, and indifferent to ideals. Where I encodes life as an ethereal necessity or guiding ideal, U encodes reality as it is encountered in practice: uneven terrain, unpredictable forces, and the raw conditions that resist organization. U does not describe chaos as evil or destructive in itself; rather, it describes the *absence of constraint*, the state in which processes are free to drift, collide, or destabilize. When U appears in a word, it signals exposure to forces that are not ordered, not centered, and not guaranteed to resolve favorably.
+
+Spatially, U is positioned **outward and downward** on the vowel wheel. The outward direction places it firmly in the temporal and external domain, while the downward orientation grounds it in the earthly and material. This geometry marks U as the opposite of ethereal aspiration: it is gravity, weight, and decline rather than lift or idealization. The downward motion does not imply moral failure, but it does imply loss of coherence. Unlike A, which ascends inward toward order, or I, which ascends outward toward life as an ideal, U moves away from centering forces altogether. It is the vowel of slope, turbulence, and drift—the sound of systems moving without guidance.
+
+The significance of U lies in its role as the **entropy-permitting element** of the language. U allows for growth that is unplanned, change that is unmanaged, and expansion that lacks structure. This makes it essential, not accidental: without U, there is no need for order, stabilization, or ascent. In Egyptian terms, U represents the reality that the world does not naturally align itself with human or divine ideals. It must be negotiated, constrained, or redirected. U is therefore the vowel of exposure—the sound that names the raw, external conditions against which order, life, and meaning must continually assert themselves.
+
+
+---
+
+
+### O: Profoundness and Intensity of a Domain
+
+O is the vowel of depth, profoundness, and internal intensity, and it is uniquely characterized by its objectivity within the Egyptian sound model. At the level of meaning, O does not judge, elevate, or destabilize; it simply defines how deep something is. It represents the measured profundity of a domain, whether physical, emotional, or conceptual, without implying value, aspiration, or disorder. Where A encodes ordered ascent and U encodes uncontrolled divergence, O encodes depth as fact. When O appears in a word, it signals intensity that is neither praised nor feared—only acknowledged.
+
+Spatially, O is positioned inward and downward on the vowel wheel. The inward orientation reflects containment and internalization, while the downward orientation grounds O firmly in the earthly rather than the ethereal. This geometry reinforces O’s neutrality: it points neither toward ideals nor toward chaos, but toward what lies beneath the surface. O describes deep water without implying danger, buried resources without implying exploitation, and accumulated meaning without implying wisdom. It is the sound of what is present, not what ought to be done with it.
+
+The significance of O lies in its role as the unbiased depth operator of the system. O allows the language to describe intensity, weight, and profundity without distortion. It is essential for technical clarity because it separates measurement from interpretation. In Egyptian terms, O encodes the understanding that reality contains deep structures and forces that exist independently of human desire or divine aspiration. It is the vowel of objective depth—the sound that names profundity without emotion, direction, or intent.
+
+
+
+---
+
+### The Glottal Stop (ʔ): The NULL Operator
+
+The **glottal stop** (ʔ) is the **stoppage of airflow** at the vocal cords.  Whether or not it is formally specified in a linguistic culture, it is a functional reality of the vocalization system.
+
+> **Figure 2.4** — *Glottal Stop (ʔ) as Airflow Arrest*  
+> *(Diagram illustrating complete stoppage of airflow at the vocal cords.)*
 
 For English speakers, this sound can be difficult to notice, but it is common in speech. Say the phrase:
 
@@ -189,25 +234,55 @@ It is essential for describing:
 - control,
 - and restraint.
 
+**The glottal stop (ʔ)** is the vowel of **intentional stoppage**, defined physically by the complete arrest of airflow at the vocal cords. Functionally, this action is inseparable from survival: the same muscular closure that produces the glottal stop is used when humans **swallow food or water**, protecting the airway and allowing intake to occur safely. In speech, this stoppage is brief and precise; in the body, it is vital. The sound is not created by shaping air, but by **withholding it**. This makes ʔ fundamentally different from all other vowels—it is not a sound of flow, depth, ascent, or divergence, but of **control through cessation**.
+
+In the Egyptian sound model, the glottal stop represents the **NULL operator**. NULL here does not mean zero. Zero is a quantity; NULL is the **absence of quantity**. Zero still belongs to a scale, but NULL sits outside it. Similarly, ʔ does not represent “nothing” as a value; it represents the **deliberate absence of motion**. It marks boundaries, interruptions, and limits—places where a process is halted so that something else may safely occur. This distinction is crucial: the glottal stop does not negate meaning; it **creates the conditions under which meaning can change**.
+
+Spatially, ʔ occupies a unique position on the vowel wheel as a **boundary marker rather than a directional force**. It neither moves inward nor outward, neither upward nor downward. Instead, it defines where movement stops. This is why ʔ is essential for describing control, restraint, and transitions in Egyptian words. Just as swallowing requires a momentary closure to allow nourishment to enter the body, linguistic processes require moments of stoppage to allow transformation. In Egyptian terms, the glottal stop encodes the understanding that **absence can be functional**, that stopping is not failure, and that control often depends not on motion, but on knowing precisely when to halt it.
+
+
 ---
+
+### The Primal Vowel Pentagram
+
+These five vowels are not arranged in a line, but in a **pentagram geometry**.  
+Each vowel occupies a distinct angular position, separated by 144° from its neighbors.
+
+The most “divine” vowel—**A**—is placed **22 degrees up and to the left** of true vertical. This orientation establishes the entire system.
+
+| Vowel | Domain              | Directional Character                          | Angle (θ) |
+| ----- | ------------------- | ---------------------------------------------- | --------- |
+| **A** | Ascent / order      | Upward and inward (ordering, celestial)        | **−22° (338°)**  |
+| **I** | Water / flow        | Outward and upward (life, relief)              | **50°**   |
+| **U** | Divergence / chaos  | Outward and downward (destabilizing emergence) | **122°**  |
+| **O** | Depth / internality | Inward and downward (latent, profound)         | **194°**  |
+| **ʔ** | NULL / stop         | Boundary / absence / arrest of motion          | **266°**  |
+
+
+This geometry is not symbolic; it reflects how these sounds are **felt and produced** in the body.
+
+---
+
+
 
 ## 2.4 Internal vs External Orientation
 
-Each vowel has an **inward or outward bias**:
+Each vowel exhibits an inward/outward and upward/downward bias:
 
-- **O** is deeply internal—almost swallowing inward.
-- **I** moves outward and upward—flowing toward life and relief.
-- **U** moves outward and downward—divergent and destabilizing.
-- **A** moves upward and inward—ordering ascent.
-- **ʔ** arrests motion entirely.
+- **O** — deeply downward, slightly inward
+- **I** — outward and upward
+- **U** — outward and downward
+- **A** — inward and upward
+- **ʔ** — total arrest
 
-These orientations are critical. Egyptian meaning depends not just on which sound is used, but **where it points**.
+Egyptian meaning depends not just on which sound is used, but **where it points in experiential space**.
 
 ---
 
-## 2.5 The Monad Vowel: E
+## 2.5 E: The central monad
 
-[insert sound wheel showing 5 vowels here adding the monad]
+> **Figure 2.5** — *Monad E as Central Stabilizing Vowel*  
+> *(Sound wheel showing E at the center, slightly elevated, stabilizing A and U.)*
 
 Beyond the five primal vowels is **E**, called the **Monad E**.
 
@@ -228,7 +303,14 @@ E sits at the **center**, slightly elevated, reflecting that it is:
 - effortful,
 - and temporary.
 
-E stabilizes both **A** (order) and **U** (divergence).
+E stabilizes both **A** (order) and **U** (chaos).
+
+**E** is the vowel of **centering, reference, and stabilization** in the Egyptian sound model. Unlike the primal vowels, E does not describe a natural domain of experience; it describes the **act of imposing balance**. E represents the monad—the constructed point of reference against which motion, depth, ascent, and divergence can be measured. When E appears, it signals that a process is being brought into alignment, moderated, or held steady. It is not movement, but **control of movement**; not direction, but **orientation**.
+
+Physiologically, E is distinctive because it **requires muscular tension** to produce. The tongue, jaw, and mouth must be held in a precise configuration, and the sound cannot be sustained comfortably for long. This effortful nature is essential to its meaning. E exists only while energy is actively applied; once that effort relaxes, speech naturally falls into one of the primal vowels. For this reason, E is not counted among the five primal vowels. It is not a resting sound—it is a **maintained state**, reflecting stabilization that must be continually upheld.
+
+Spatially, E occupies the **origin of the vowel wheel**, slightly elevated to reflect its constructed and intentional character. It is not placed on the pentagram with the primal vowels because it does not represent a domain; it represents **the center itself**. Conceptually, E mediates between the opposing tendencies of A and U, not by canceling them, but by constraining them relative to a reference point. In Egyptian terms, E encodes the understanding that order and chaos are not resolved by opposition, but by centering. It is the vowel of balance through effort—the sound of systems being held together long enough for meaning, judgment, and structure to emerge.
+
 
 ---
 
@@ -249,6 +331,10 @@ Physiologically:
 - or extreme contexts.
 
 It marks **overextension of stabilization**—when centering itself becomes strained.
+
+Æ is the vowel of distress, strain, and alarmed extension in the Egyptian sound model. It represents an overextension of E, where the effort required to maintain centering exceeds comfortable limits. Physiologically, Æ is produced by opening the mouth wider and forcing the sound outward under tension, often accompanied by heightened emotional expression. It closely resembles the sound of a human cry—especially the cry of an infant—where stabilization gives way to urgency. Unlike E, which is controlled and intentional, Æ marks the moment when control is still attempted but no longer sustainable.
+
+Conceptually, Æ signals instability within centering itself. It does not describe chaos in the external world (as U does), but distress arising from an inability to center. Æ appears in contexts of alarms:  warning, pain, urgency, or emotional overload—situations where equilibrium is breaking down under pressure. In Egyptian terms, Æ encodes the recognition that stabilization has limits: when balance can no longer be maintained quietly, it announces itself loudly. Æ is therefore rare and deliberate, used only when the language must convey that effort has crossed into strain and that a critical threshold has been reached.
 
 ---
 
@@ -319,6 +405,12 @@ For example:
 •	A-H resembles a relaxed inhale.
 These patterns appear across languages because they align with natural physiological rhythms.
 
+**H** is the consonant of **breath, airflow, and vitality** in the Egyptian sound model. At its most fundamental level, H represents the movement of air itself—the prerequisite for all spoken sound and for life. Breathing is the first and last action of living organisms, and H encodes this elemental truth. When H appears in a word, it signals that a process is animated by breath: it is alive, circulating, and sustained. Unlike consonants that shape or obstruct airflow, H preserves it, making audible the act of respiration itself.
+
+Physiologically, H is produced with minimal obstruction. The mouth and throat remain open, allowing air to pass freely. This lack of constriction is essential to its meaning. H does not impose form; it **enables motion**. It is the sound of inhalation and exhalation, of warmth leaving the body, of fog forming on a cold morning. In Egyptian terms, H is not merely sound but *evidence of life in motion*. It marks processes that depend on continuity rather than structure, circulation rather than containment.
+
+Conceptually and spatially, H occupies a foundational role beneath other consonants. It does not define direction by itself, but it **animates direction** when combined with vowels and operators. H can deepen O into living depth (HO), soften authority into praise or reverence, or transform static systems into dynamic ones. Its significance lies in its neutrality and indispensability: without H, nothing moves, nothing speaks, nothing lives. In the Egyptian model, H encodes the understanding that breath is not symbolic—it is the condition that makes all processes, linguistic or otherwise, possible.
+
 
 
 #### M — Turning
@@ -340,20 +432,18 @@ This sequence:
 •	and finally closes with internal resonance.
 It mirrors the physical act of calming breath and inward focus — a reminder that sound meaning often arises from embodied experience, not abstract symbolism.
 
+M is the consonant of turning, modulation, and internal circulation in the Egyptian sound model. At the level of meaning, M describes processes that do not move in a straight line but instead cycle, reverse, fold back on themselves, or circulate internally. It is the sound of transformation that occurs within a system rather than through outward motion. When M appears in a word, it often signals that something is being worked through internally—breath, thought, emotion, or substance—before it manifests externally.
 
+Physiologically, M is produced by closing the lips while allowing breath to continue vibrating inside the mouth and nasal cavity. Air is not expelled outward; it is retained and redirected. This physical action mirrors its semantic role precisely. M does not release energy like H, nor does it abruptly stop it like the glottal stop. Instead, it contains and redirects. It is the sound humans naturally make when thinking, humming, or soothing—evidence of internal processing rather than external declaration.
+
+Conceptually and spatially, M functions as a mediator between breath and structure. It often follows H, indicating breath that has been turned inward, or precedes R, indicating internal processing that is about to be manifested. In Egyptian terms, M encodes the insight that many meaningful changes occur not through force or ascent, but through internal circulation and gradual transformation. It is the consonant of digestion, reflection, emotional working-through, and cyclical renewal—the sound that names how systems reorganize themselves from within before taking new form.
 
 
 ---
 
 ### 2.8.2 Structural and Continuity Cluster
 
-#### L — Continuity
-L represents unbroken persistence:
-- smoothing,
-- continuation,
-- calming flow.
 
-It carries other forces through time.
 
 #### T — Horizon
 T represents:
@@ -362,6 +452,21 @@ T represents:
 - a plane or boundary.
 
 It anchors spatial reasoning.
+
+T is the consonant of horizon, boundary, and infinite extension in the Egyptian sound model. At the level of meaning, T represents a line that does not terminate—a conceptual horizon rather than a physical wall. It encodes the idea of a limit that can be approached but not crossed, a reference line against which movement, direction, and scale are measured. When T appears in a word, it signals that a process is being defined relative to a boundary: land against sky, water against shore, known against unknown.
+
+Physiologically, T is produced by a clean, precise interruption of airflow using the tongue against the teeth or palate, followed by release. This sharp articulation gives T its character as a defining edge. Unlike the glottal stop, which halts airflow completely, T momentarily blocks and then releases it, creating a crisp boundary rather than absolute absence. This mirrors its semantic role: T does not erase motion; it marks where motion meets a defining line.
+
+Conceptually and spatially, T aligns with the idea of the earthly horizon, especially meaningful in a river-based civilization like Egypt. The horizon separates sky from land, past from future, and establishes orientation in surveying and navigation. In Egyptian terms, T encodes the understanding that reality is structured by reference lines—planes along which measurement, division, and order become possible. It is the consonant of limits without finality, the sound that names how humans locate themselves within an infinite world by drawing meaningful boundaries.
+
+
+#### L — Continuity
+L represents unbroken persistence:
+- smoothing,
+- continuation,
+- calming flow.
+
+It carries other forces through time.
 
 ---
 
@@ -479,6 +584,10 @@ Above represents that which is elevated.  Below represents that which is lowly a
 ### Sound string examples
 
 In any language, you can map a sound string to the sound wheel.  Meaning of sound is not fully described yet; however, spatial geometry can already be informative and insightful.
+
+#### HUA
+This string of sounds are not a word precisely in English but may be related to the verbal affirmation "Hooah" used by the U.S. Army suggesting the acronym HUA to mean "Heard, Understood, Acknowledged".  "H" is the source of breath coming from the lungs, which can naturally descend along the "U" track and from there return towards the "H" but more precisely to the "A" sound.  As a unit of the military are running, they shout out HUA which accounts for a shared breathing exclamation.  Later, as we merge sounds together to form meaning they could be equally saying "[we] breath as one."
+
 
 #### Den vs. Dan 
 Say the word "den" DEN and notice where the three sound formations occur.  The "D" forms forward of the "L", then the formation moves downward and slightly backward (as if swallowing), then the formation moves upward again and forward, more forward than the "D" to the "N".  
