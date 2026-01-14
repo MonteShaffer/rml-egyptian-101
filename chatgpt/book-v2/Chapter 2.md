@@ -133,7 +133,7 @@ Rather than treating vowels as arbitrary phonetic elements, we treat them as **f
 
 ---
 
-## 2.2 The Five Primal Vowels
+## 2.2 Basic Meaning of Five Primal Vowels
 
 Egyptian relies on **five primal vowels**:
 
@@ -468,6 +468,12 @@ L represents unbroken persistence:
 
 It carries other forces through time.
 
+L is the consonant of continuity, smooth persistence, and unbroken flow in the Egyptian sound model. At the level of meaning, L describes what carries on without interruption—processes that endure, stabilize, or gently propagate over time. Unlike M, which turns inward and modulates, or R, which brings something into visible manifestation, L sustains. When L appears in a word, it signals that whatever process is underway is not abrupt or momentary, but extended, maintained, and often calming. It is the sound of duration rather than change.
+
+Physiologically, L is produced by allowing air to pass smoothly around the tongue with minimal obstruction. This effortless articulation mirrors its semantic role: L does not force, block, or redirect airflow sharply. Instead, it lets sound continue. The ease with which L can be sustained makes it one of the most naturally flowing consonants in human speech. This physical smoothness is essential to its meaning—L encodes persistence that does not require strain, effort, or repeated initiation.
+
+Conceptually and spatially, L acts as a carrier of other forces. It allows ascent (A) to become calming order (LA), or divergence (U) to become prolonged drift (LU). In Egyptian terms, L encodes the insight that continuity itself is a powerful stabilizer. Systems do not always need correction or intervention; sometimes they require only time and uninterrupted flow to settle into coherence. L is therefore the consonant of endurance, harmony, and sustained balance—the sound that names how order, motion, or even disorder persists across time without breaking.
+
 ---
 
 ### 2.8.3 Manifestation and Agency Cluster
@@ -478,11 +484,22 @@ R brings internal processes into visibility:
 - realization,
 - appearance.
 
+**R** is the consonant of **manifestation, realization, and outward appearance** in the Egyptian sound model. At the level of meaning, R marks the moment when something internal becomes perceptible—when an idea, process, or force crosses from hidden or latent existence into visible reality. It does not create the underlying process; rather, it **reveals it**. When R appears in a word, it signals that what precedes it is being expressed, embodied, or made known. R is therefore not origin but emergence—the sound of becoming apparent.
+
+Physiologically, R is produced through **controlled vibration and shaping of airflow**, often involving the tongue and palate in a way that creates resonance. This resonance is significant: R does not block or simply pass air, it **modulates it into presence**. The sound has texture and audibility, reflecting its semantic role as a marker of visibility and articulation. Unlike H, which lets breath flow freely, or M, which turns breath inward, R shapes breath into something that stands out and can be recognized.
+
+Conceptually and spatially, R sits at the threshold between the internal and external. It is frequently paired with vowels that indicate domain—A for ascent, O for depth, I for flow—to show *what kind* of thing is being manifested. In Egyptian terms, R encodes the understanding that reality is not defined solely by what exists internally, but by what is made perceptible and shared. It is the consonant of expression, evidence, and presence—the sound that names the act by which meaning enters the observable world.
+
+
 #### Y — Directed Force
 Y represents focused agency:
 - aim,
 - strike,
 - intentional direction.
+
+Y is the consonant of directed force, intentional aim, and focused agency in the Egyptian sound model. At the level of meaning, Y represents energy that is no longer diffuse but concentrated toward a target. It is the sound of choosing a direction and committing to it. When Y appears in a word, it signals that an action is being guided deliberately rather than unfolding passively. Y encodes intention sharpened into motion—force with purpose.
+
+Physiologically, Y is produced by narrowing and directing airflow through a precise tongue and mouth configuration. This shaping mirrors its semantic role exactly: breath is no longer simply moving or circulating, but being aimed. Conceptually, Y operates between internal decision and external manifestation, often preceding or reinforcing R. In Egyptian terms, Y encodes the insight that agency is not merely the presence of power, but the ability to direct that power toward a specific outcome. It is the consonant of aim, will, and purposeful action.
 
 ---
 
@@ -494,11 +511,20 @@ B represents grounding:
 - physical support,
 - base or foundation.
 
+B is the consonant of grounding, support, and contact with the earth in the Egyptian sound model. At the level of meaning, B represents the point at which movement, intention, or structure meets physical reality. It is associated with the foot, the base, and the act of standing or stepping upon solid ground. When B appears in a word, it signals stability derived from contact—being supported, anchored, or physically present. B encodes the understanding that no action or structure can persist without a foundation.
+
+Physiologically, B is produced by closing and releasing the lips, a motion that mirrors contact and separation. This articulation reflects its semantic role as a marker of touch and grounding. Conceptually, B often appears near vowels that indicate domain, especially U and I, highlighting the relationship between ground and flow or slope and footing. In Egyptian terms, B encodes the insight that grounding is not passive; it is an active condition that enables balance, movement, and ascent. It is the consonant of support—the sound that names how systems remain connected to the material world.
+
 #### D — Hand
 D represents action from above:
 - grasping,
 - shaping,
 - directing.
+
+**D** is the consonant of **action, handling, and deliberate engagement** in the Egyptian sound model. At the level of meaning, D represents the **hand**—the instrument by which humans grasp, shape, and intervene in the world. Unlike B, which grounds and supports, D acts. When D appears in a word, it signals intentional manipulation, effort, or execution. It encodes agency applied through touch, work, and skilled movement.
+
+Physiologically, D is produced by a **precise contact of the tongue against the palate or teeth**, followed by release. This controlled articulation mirrors the semantics of the hand: contact made deliberately and then withdrawn. Conceptually, D is aligned with the upper, ethereal side of the vertical axis—action that reaches outward rather than merely standing firm. In Egyptian terms, D encodes the insight that creation and change occur not only through ascent or manifestation, but through **hands-on engagement** with reality. It is the consonant of doing, shaping, and intentional labor.
+
 
 ---
 
@@ -528,11 +554,24 @@ S represents:
 - declaration,
 - enactment.
 
+**S** is the consonant of **assertion, causation, and the act of making something so** in the Egyptian sound model. At the level of meaning, S represents the moment when intent becomes enforced—when a condition is declared, set, or brought into effect. It is not merely action (D) or manifestation (R), but **assertive causality**. When S appears in a word, it signals that a state is being established, commanded, or initiated. S encodes the idea of making a thing true.
+
+Physiologically, S is produced by **forcing air through a narrow channel**, creating friction. This sustained, directed pressure reflects its semantic role: S is continuous insistence rather than momentary contact. Conceptually, S often precedes operators that define domain or outcome, acting as the trigger that activates them. In Egyptian terms, S encodes the insight that reality is shaped not only by movement or structure, but by **assertion and will**—the sustained act of setting conditions into motion and holding them there.
+
+
 #### G and K — Bounds
 - **G** is bounded resistance (hard stop).
 - **K** is unbounded extension (infinite).
 
 Together, they describe limits and scale.
+
+G is the consonant of bounded resistance, obstruction, and hard constraint in the Egyptian sound model. At the level of meaning, G represents a force that stops, blocks, or resists movement within a defined limit. It is not absence like the glottal stop, nor gentle boundary like T, but an active impediment. When G appears in a word, it signals friction, hardness, or a point at which progress meets firm opposition. G encodes the reality of material resistance—stone, bone, walls, and limits that must be worked around or broken through.
+
+Physiologically, G is produced by closing the back of the mouth and releasing air abruptly, creating a dense, grounded sound. This articulation mirrors its semantic role as a hard stop embedded within substance rather than imposed externally. Conceptually, G sits near the glottal stop on the sound wheel but differs critically: the glottal stop is NULL, while G is something solid in the way. In Egyptian terms, G encodes the insight that resistance is not merely negation—it is a defining feature of physical reality that shapes how action, effort, and structure unfold.
+
+K is the consonant of unboundedness, excess scale, and the infinite or overwhelming in the Egyptian sound model. At the level of meaning, K represents what exceeds ordinary limits—greatness, vastness, multitude, or forces too large to be easily contained. Where G constrains, K expands. When K appears in a word, it signals that the domain involved operates beyond the human scale or beyond simple boundaries. K encodes magnitude, enormity, and openness without closure.
+
+Physiologically, K is produced similarly to G but with a lighter, more aspirated release, giving it a sense of openness rather than density. This subtle difference is crucial: K does not feel blocked; it feels released into space. Conceptually, K occupies the opposite pole from G across the glottal boundary—where G marks a hard stop within matter, K marks the absence of a stop, the refusal of finitude. In Egyptian terms, K encodes the insight that some forces cannot be fully bounded or controlled, only navigated. It is the consonant of scale, infinity, and the vast domains that lie beyond immediate containment.
 
 ---
 
