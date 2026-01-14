@@ -183,6 +183,11 @@ body {
   stroke-linecap: round;
 }
 
+.lw-anim-arrow-blend {
+  stroke-dasharray: 8 6; /* blend “texture” (the draw-on dash still works because we override inline) */
+  stroke-width: 7;
+  opacity: 0.85;
+}
 
 
 .lw-query {

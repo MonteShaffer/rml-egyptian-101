@@ -32,10 +32,166 @@ const CLASS_MAP = {
   // Helpers
   // -------------------------------
   
-  function animateSoundString(tokens, pointMemory, gAnim, opts = {}) 
-  {
-  const stepMs = opts.stepMs ?? 900;
-  const endPauseMs = opts.endPauseMs ?? 1800;
+  function renderFinalArrows(moves, pointMemory, gAnim) {
+  // clear current
+  while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
+
+  for (const m of moves) {
+    const p1 = pointMemory[m.from];
+    const p2 = pointMemory[m.to];
+    if (!p1 || !p2) continue;
+
+    const line = svgEl("line", {
+      x1: p1.x, y1: p1.y,
+      x2: p2.x, y2: p2.y,
+      class: "lw-anim-arrow",
+      "marker-end": "url(#lw-arrowhead)"
+    });
+
+    // Optional: style blends differently in static mode too
+    if (m.kind === "blend") line.classList.add("lw-anim-arrow-blend");
+
+    // IMPORTANT: no dash animation in static mode
+    line.style.strokeDasharray = "";
+    line.style.strokeDashoffset = "";
+
+    gAnim.appendChild(line);
+  }
+}
+
+
+function renderFinalArrowsFromTokens(tokens, pointMemory, gAnim) {
+  while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
+
+  for (let i = 0; i < tokens.length - 1; i++) {
+    const a = tokens[i], b = tokens[i + 1];
+    const p1 = pointMemory[a];
+    const p2 = pointMemory[b];
+    if (!p1 || !p2) continue;
+
+    const line = svgEl("line", {
+      x1: p1.x, y1: p1.y,
+      x2: p2.x, y2: p2.y,
+      class: "lw-anim-arrow",
+      "marker-end": "url(#lw-arrowhead)"
+    });
+
+    gAnim.appendChild(line);
+  }
+}
+
+
+function animateMoves(moves, pointMemory, gAnim, opts = {}) {
+  const waitMs   = opts.waitMs ?? 900;
+  const pauseMs  = opts.pauseMs ?? 120;
+  const pxPerSec = opts.pxPerSec ?? 900;
+
+  if (!moves || moves.length === 0) return null;
+
+  // stop any previous run
+  if (animateMoves._timer) clearTimeout(animateMoves._timer);
+  animateMoves._stopped = false;
+
+  function clearAnim() {
+    while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
+  }
+
+  function schedule(fn, ms) {
+    animateMoves._timer = setTimeout(() => {
+      if (!animateMoves._stopped) fn();
+    }, ms);
+  }
+
+  function drawStep(i) {
+    if (i >= moves.length) {
+      // PHASE 2: hold all arrows
+      schedule(() => {
+        // PHASE 3: clear and hold empty
+        clearAnim();
+        schedule(() => {
+          clearAnim();
+          drawStep(0);
+        }, waitMs);
+      }, waitMs);
+      return;
+    }
+
+   const m = moves[i];
+const durationMs = drawArrow(gAnim, pointMemory, m.from, m.to, { kind: m.kind, pxPerSec }) || 400;
+
+    schedule(() => {
+      drawStep(i + 1);
+    }, durationMs + pauseMs);
+  }
+
+  // start fresh
+  clearAnim();
+  drawStep(0);
+
+  return {
+    stop() {
+      animateMoves._stopped = true;
+      if (animateMoves._timer) clearTimeout(animateMoves._timer);
+    },
+    clear() {
+      clearAnim();
+    }
+  };
+}
+
+
+function drawArrow(gAnim, pointMemory, from, to, opts = {}) {
+  const p1 = pointMemory[from];
+  const p2 = pointMemory[to];
+  if (!p1 || !p2) return 0;
+
+  const x1 = Number(p1.x), y1 = Number(p1.y);
+  const x2 = Number(p2.x), y2 = Number(p2.y);
+
+  const len = Math.hypot(x2 - x1, y2 - y1);
+
+  const kind = opts.kind || "normal";
+  const cls = kind === "blend"
+    ? "lw-anim-arrow lw-anim-arrow-blend"
+    : "lw-anim-arrow";
+
+  const line = svgEl("line", { x1, y1, x2, y2, class: cls });
+
+  // draw-on effect
+  line.style.strokeDasharray = String(len);
+  line.style.strokeDashoffset = String(len);
+
+  // no arrowhead until near end (so it doesn't appear too soon)
+  gAnim.appendChild(line);
+
+  const pxPerSec = opts.pxPerSec ?? 900;
+  const minMs = opts.minMs ?? 180;
+  const maxMs = opts.maxMs ?? 1200;
+
+  let durationMs = (len / pxPerSec) * 1000;
+  durationMs = Math.max(minMs, Math.min(maxMs, durationMs));
+
+  requestAnimationFrame(() => {
+    line.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
+    line.style.strokeDashoffset = "0";
+  });
+
+  const headAt = opts.headAt ?? 0.88;
+  setTimeout(() => {
+    if (line.isConnected) line.setAttribute("marker-end", "url(#lw-arrowhead)");
+  }, Math.floor(durationMs * headAt));
+
+  return durationMs;
+}
+
+
+
+  
+  function animateSoundString(tokens, pointMemory, gAnim, opts = {}) {
+		  const waitMs   = opts.waitMs ?? 900;     // how long to hold "all arrows" AND "cleared"
+		  const pauseMs  = opts.pauseMs ?? 120;    // tiny pause between steps
+		  const pxPerSec = opts.pxPerSec ?? 900;   // constant-speed draw
+		  const headAt   = opts.headAt ?? 0.88;    // when arrowhead appears within draw
 
 		  // cancel any prior run
 		  if (animateSoundString._timer) clearTimeout(animateSoundString._timer);
@@ -44,85 +200,61 @@ const CLASS_MAP = {
 		  function clearAnim() {
 			while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
 		  }
-			
-		function drawArrow(a, b, opts = {}) {
-			  const p1 = pointMemory[a];
-			  const p2 = pointMemory[b];
-			  if (!p1 || !p2) return 0;
 
-			  const x1 = Number(p1.x), y1 = Number(p1.y);
-			  const x2 = Number(p2.x), y2 = Number(p2.y);
-
-			  const len = Math.hypot(x2 - x1, y2 - y1);
-
-			  const line = svgEl("line", {
-				x1, y1, x2, y2,
-				class: "lw-anim-arrow"
-			  });
-
-			  // Dash setup: line starts invisible
-			  line.style.strokeDasharray = String(len);
-			  line.style.strokeDashoffset = String(len);
-
-			  // IMPORTANT: do NOT set marker-end yet (arrowhead would appear immediately)
-			  gAnim.appendChild(line);
-
-			  // Constant-speed duration (pixels/sec)
-			  const pxPerSec = opts.pxPerSec ?? 900;
-			  const minMs = opts.minMs ?? 180;
-			  const maxMs = opts.maxMs ?? 1200;
-
-			  let durationMs = (len / pxPerSec) * 1000;
-			  durationMs = Math.max(minMs, Math.min(maxMs, durationMs));
-
-			  requestAnimationFrame(() => {
-				line.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
-				line.style.strokeDashoffset = "0";
-			  });
-
-			  // Attach arrowhead near the end of the draw
-			  const headAt = opts.headAt ?? 0.88; // 88% of duration feels right
-			  setTimeout(() => {
-				// Only add the marker if the line still exists (not cleared/stopped)
-				if (line.isConnected) {
-				  line.setAttribute("marker-end", "url(#lw-arrowhead)");
-				}
-			  }, Math.floor(durationMs * headAt));
-
-			  return durationMs;
-			}
+		  function schedule(fn, ms) {
+			animateSoundString._timer = setTimeout(() => {
+			  if (!animateSoundString._stopped) fn();
+			}, ms);
+		  }
+		  
+		  
+		 
 
 
-
-
-		  function run(i) {
-			if (animateSoundString._stopped) return;
-
-			clearAnim();
-
-			if (tokens.length < 2) return;
+		  // --- Draw one arrow. IMPORTANT: do NOT clear between steps; we accumulate. ---
+		  function drawStep(i) {
+			if (tokens.length < 2) return loopRestart();
 
 			const a = tokens[i];
-			const b = tokens[(i + 1) % tokens.length];
+			const b = tokens[i + 1];
 
-			// draw one move
-			drawArrow(a, b);
+			// drawArrow should draw into gAnim and return durationMs
+			//const durationMs = drawArrow(a, b, { pxPerSec, headAt }) || 400;
+			const durationMs = drawArrow(gAnim, pointMemory, a, b, { kind: "normal", pxPerSec: 900 }) || 400;
 
-			// if we're at the end, pause then restart at 0
 			const nextI = i + 1;
-			const isEnd = nextI >= tokens.length - 1;
+			const isLast = nextI >= tokens.length - 1;
 
-			animateSoundString._timer = setTimeout(() => {
-			  if (isEnd) {
-				clearAnim();
-				animateSoundString._timer = setTimeout(() => run(0), endPauseMs);
+			schedule(() => {
+			  if (isLast) {
+				// Phase 2: hold ALL arrows on screen for waitMs
+				schedule(() => {
+				  // Phase 3: clear and hold empty for waitMs
+				  clearAnim();
+				  schedule(() => {
+					// Phase 1 again
+					clearAnim();
+					drawStep(0);
+				  }, waitMs);
+				}, waitMs);
 			  } else {
-				run(nextI);
+				// Continue steps (accumulating arrows)
+				drawStep(nextI);
 			  }
-			}, stepMs);
+			}, durationMs + pauseMs);
 		  }
 
-		  run(0);
+		  function loopRestart() {
+			clearAnim();
+			schedule(() => {
+			  clearAnim();
+			  drawStep(0);
+			}, waitMs);
+		  }
+
+		  // start: ensure clean slate, then begin
+		  clearAnim();
+		  drawStep(0);
 
 		  // return controls
 		  return {
@@ -137,9 +269,225 @@ const CLASS_MAP = {
 	}
 
 
+const moves = [];
+function addMove(from, to, kind) {
+  if (!from || !to) return;
+  if (!pointMemory[from] || !pointMemory[to]) return;
+  moves.push({ from, to, kind });
+}
 
 
 
+function cleanseAndTokenizeQuery(raw, pointMemory) {
+		  const DIP = ["th", "sh", "ch", "zh"];
+		  const BLEND_VOWELS = new Set(["A", "E", "I", "O", "U", "ʔ", "Æ"]);
+
+		  // 1) Normalize whitespace (collapse multiple spaces)
+		  let s = String(raw || "").replace(/\s+/g, " ").trim();
+
+		  let cleansed = "";
+		  const tokens = [];
+
+
+		  
+		  function pushNormalToken(token, tokens, moves, pointMemory) {
+			  if (!token) return;
+
+			  // Only accept known sounds
+			  if (!pointMemory[token]) return;
+
+			  const prev = tokens.length ? tokens[tokens.length - 1] : null;
+
+			  tokens.push(token);
+
+			  // Record a NORMAL move from previous token → this token
+			  if (prev && pointMemory[prev]) {
+				moves.push({
+				  from: prev,
+				  to: token,
+				  kind: "normal",
+				  step: tokens.length - 2
+				});
+			  }
+			}
+
+		
+		function pushBlendTokens(blendText, tokens, moves, pointMemory) {
+			  // Allowed vowels for blending
+			  const BLEND_VOWELS = new Set(["A", "E", "I", "O", "U", "ʔ", "Æ"]);
+
+			  // blendText is already normalized and uppercased (e.g., "OE", "AʔÆ")
+			  const chars = [...blendText];
+
+			  // Validate: ALL characters must be valid blend vowels
+			  if (!chars.every(ch => BLEND_VOWELS.has(ch))) {
+				return false; // caller must fall back to normal parsing
+			  }
+
+			  // Remember where this blend starts in the token stream
+			  const startIndex = tokens.length;
+
+			  // Push tokens and record BLEND moves explicitly
+			  for (let i = 0; i < chars.length; i++) {
+				const cur = chars[i];
+				if (!pointMemory[cur]) continue;
+
+				tokens.push(cur);
+
+				// Create a BLEND move between consecutive vowels inside the group
+				if (i > 0) {
+				  const prev = chars[i - 1];
+				  if (pointMemory[prev]) {
+					moves.push({
+					  from: prev,
+					  to: cur,
+					  kind: "blend",
+					  step: startIndex + i - 1
+					});
+				  }
+				}
+			  }
+
+			  return true;
+			}
+
+
+		  // If a (...) group isn't a valid diphthong or vowel-blend,
+		  // we "de-parenthesize" it and re-parse its content normally.
+		  function parseInline(chunk) {
+			// parse chunk using the same rules as the main loop (but no parentheses nesting)
+			for (let k = 0; k < chunk.length; ) {
+			  const c = chunk[k];
+
+			  if (c === " " || c === "-") { k++; continue; }
+
+			  const two = chunk.slice(k, k + 2);
+			  if (two.length === 2 && DIP.includes(two.toLowerCase())) {
+				const d = two.toLowerCase();
+				cleansed += `(${d})`;
+				//pushToken(d);
+				pushNormalToken(d, tokens, moves, pointMemory);
+				k += 2;
+				continue;
+			  }
+
+			  if (/[A-Za-z]/.test(c)) {
+				const up = c.toUpperCase();
+				cleansed += up;
+				pushNormalToken(up, tokens, moves, pointMemory);
+				k++;
+				continue;
+			  }
+
+			  if (c === "Æ" || c === "ʔ" || c === "ə" || c === "ǁ" || c === "ǀ" || c === "ʘ") {
+				cleansed += c;
+				pushNormalToken(c, tokens, moves, pointMemory);
+				k++;
+				continue;
+			  }
+
+			  k++;
+			}
+		  }
+
+		  // 2) Scan left to right
+		  for (let i = 0; i < s.length; ) {
+			const c = s[i];
+
+			if (c === " " || c === "-") { i++; continue; }
+
+			// Parenthesized group
+			if (c === "(") {
+			  const j = s.indexOf(")", i + 1);
+			  if (j === -1) { i++; continue; } // unclosed
+
+			  let inside = s.slice(i + 1, j);
+			  inside = inside.replace(/[ -]/g, ""); // remove spaces/dashes inside groups
+			  if (!inside) { i = j + 1; continue; }
+
+			  const low = inside.toLowerCase();
+
+			  // Parenthesized diphthong normalization: (CH) -> (ch)
+			  if (DIP.includes(low)) {
+				cleansed += `(${low})`;
+				pushToken(low);
+				i = j + 1;
+				continue;
+			  }
+
+			  // Otherwise: treat as vowel blend ONLY if all chars are allowed blend vowels
+			  const up = inside.toUpperCase();
+
+			  const isVowelBlend =
+				up.length >= 2 && // blend implies 2+ vowels; remove if you want to allow (A)
+				[...up].every(ch => BLEND_VOWELS.has(ch));
+
+			  if (isVowelBlend) {
+				  const up = inside.toUpperCase();
+					const didBlend = pushBlendTokens(up, tokens, moves, pointMemory);
+
+				if (didBlend) {
+						  cleansed += `(${up})`;
+						} else {
+						  // fallback: parse contents normally, character by character
+						  for (const ch of up) {
+							pushNormalToken(ch, tokens, moves, pointMemory);
+							cleansed += ch;
+						  }
+						}
+					} else {
+					// Not a valid blend: re-parse contents as normal stream (no parentheses)
+						parseInline(inside);
+					  }
+
+			  i = j + 1;
+			  continue;
+			}
+
+			// Non-parenthesized diphthongs: CH -> (ch)
+			const two = s.slice(i, i + 2);
+			if (two.length === 2 && DIP.includes(two.toLowerCase())) {
+			  const d = two.toLowerCase();
+			  cleansed += `(${d})`;
+			 // pushToken(d);
+			 pushNormalToken(d, tokens, moves, pointMemory);
+			  i += 2;
+			  continue;
+			}
+
+			// Single letters -> uppercase
+			if (/[A-Za-z]/.test(c)) {
+			  const up = c.toUpperCase();
+			  cleansed += up;
+			 //pushToken(up);
+			  pushNormalToken(up, tokens, moves, pointMemory);
+			  i++;
+			  continue;
+			}
+
+			// Special symbols
+			if (c === "Æ" || c === "ʔ" || c === "ə" || c === "ǁ" || c === "ǀ" || c === "ʘ") {
+			  cleansed += c;
+			  //pushToken(c);
+			    pushNormalToken(c, tokens, moves, pointMemory);
+			  i++;
+			  continue;
+			}
+
+			i++;
+		  }
+
+		  return { cleansed, tokens, moves };
+	}
+
+
+
+
+function formatParsedTokens(tokens) {
+  if (!tokens || !tokens.length) return "";
+
+  return "Parsed: " + tokens.map(t => `(${t})`).join(" ");
+}
 
 function parseQueryString(q, pointMemory) {
 		  if (!q) return [];
@@ -253,10 +601,28 @@ function parseQueryString(q, pointMemory) {
   <div class="card shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
       <div class="fw-semibold">Admin</div>
-      <div class="btn-group btn-group-sm" role="group" aria-label="Admin controls">
-        <button type="button" class="btn btn-outline-secondary lw-btn-stop">Stop</button>
-        <button type="button" class="btn btn-outline-secondary lw-btn-clear">Clear</button>
+	  
+	  
+	  
+	  
+      <div class="d-flex align-items-center gap-2">
+        <div class="form-check form-switch m-0">
+          <input class="form-check-input lw-animate-toggle"
+                 type="checkbox"
+                 id="lw-animate-toggle"
+                 checked>
+          <label class="form-check-label small" for="lw-animate-toggle">
+            Animate?
+          </label>
+        </div>
+
+        <div class="btn-group btn-group-sm" role="group" aria-label="Admin controls">
+          <button type="button" class="btn btn-outline-secondary lw-btn-stop">Stop</button>
+          <button type="button" class="btn btn-outline-secondary lw-btn-clear">Clear</button>
+        </div>
       </div>
+	  
+	  
     </div>
 
     <div class="card-body d-flex flex-column gap-3">
@@ -278,6 +644,7 @@ function parseQueryString(q, pointMemory) {
         <div class="form-text small text-muted">
           Enter sound string (e.g., A I U ʔ Æ th ch)
         </div>
+		<div class="lw-parsed form-text mt-1 text-muted"></div>
       </div>
 
       <!-- Toggles -->
@@ -784,16 +1151,47 @@ let animCtl = null;
 
 $BcontrolCol.on("click", ".lw-run", function () {
   const q = $BcontrolCol.find(".lw-query").val();
-  const tokens = parseQueryString(q, pointMemory);
+  
+  const { cleansed, tokens, moves } = cleanseAndTokenizeQuery(q, pointMemory);
+  
+  // const tokens = parseQueryString(q, pointMemory);
+  
+  // DISPLAY the cleansed parsed form
+ // show cleansed parsed form
+  $BcontrolCol.find(".lw-parsed").text(cleansed ? `Parsed: ${cleansed}` : "Parsed: (none)");
+
   
   console.log(tokens);
 
   if (animCtl) animCtl.stop();
+  
+  // Check Animate? toggle
+  const doAnimate = $BcontrolCol.find(".lw-animate-toggle").is(":checked");
+  
+  if (!doAnimate) {
+    // Static: show final end state
+    if (moves && moves.length) {
+      renderFinalArrows(moves, pointMemory, gAnim);
+    } else {
+      renderFinalArrowsFromTokens(tokens, pointMemory, gAnim);
+    }
+    return;
+  }
+  
+  
 
-  animCtl = animateSoundString(tokens, pointMemory, gAnim, {
-    stepMs: 650,
-    endPauseMs: 900
-  });
+
+  // Animated: run your existing loop (tokens or moves)
+  if (moves && moves.length) {
+    animCtl = animateMoves(moves, pointMemory, gAnim, { waitMs: 900, pxPerSec: 900 });
+  } else {
+    animCtl = animateSoundString(tokens, pointMemory, gAnim, { waitMs: 900, pxPerSec: 900 });
+  }
+  
+  
+  
+ 
+  
 });
 
 $BcontrolCol.on("click", ".lw-btn-stop", function () {
