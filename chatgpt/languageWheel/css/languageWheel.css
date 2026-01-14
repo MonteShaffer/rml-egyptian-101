@@ -1,9 +1,5 @@
 body {
   margin: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   background: #fdf6e3;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 }
@@ -72,13 +68,13 @@ body {
 }
 
 .lw-monad-ellipse {
-  stroke: #1f5fbf;
+  stroke: purple;
   stroke-width: 2;
   fill: rgba(31,95,191,0.08);
 }
 
 .lw-monad-label {
-  fill: #1f5fbf;
+  fill: purple;
   font-size: 36px;
   font-weight: 800;
   dominant-baseline: middle;
@@ -101,10 +97,10 @@ body {
 }
 /* ---------- labels ---------- */
 
-.lw-label {
+.lw-vowel-label {
   fill: #111;
   font-size: 36px;
-  font-weight: 700;
+  font-weight: 800;
   dominant-baseline: middle;
   text-anchor: middle;
   user-select: none;
@@ -177,3 +173,22 @@ body {
   opacity: 0.6;
   font-style: italic;
 }
+
+
+.lw-anim-arrow {
+  stroke: var(--bs-primary);
+  stroke-width: 6;
+  opacity: 0.75;
+  fill: none;
+  stroke-linecap: round;
+}
+
+
+
+.lw-query {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  letter-spacing: 0.15em;
+  font-weight: bold;
+  color: var(--bs-primary);
+}
+
