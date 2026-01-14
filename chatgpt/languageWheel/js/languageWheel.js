@@ -149,24 +149,9 @@ function animateMoves(moves, pointMemory, gAnim, opts = {}) {
 let durationMs = 0;
 
 if (m.kind === "blend") {
-  // BLEND: center → computed blend destination
-  durationMs = drawBlendMove(
-    svgEl,
-    gAnim,
-    pointMemory,
-    m.v1,
-    m.v2,
-    { pxPerSec }
-  ) || 400;
+  durationMs = drawBlendMove(svgEl, gAnim, pointMemory, m.v1, m.v2, m.destKey, { pxPerSec });
 } else {
-  // NORMAL: token → token
-  durationMs = drawArrow(
-    gAnim,
-    pointMemory,
-    m.from,
-    m.to,
-    { kind: "normal", pxPerSec }
-  ) || 400;
+  durationMs = drawArrow(gAnim, pointMemory, m.from, m.to, { kind: "normal", pxPerSec });
 }
 
 
@@ -245,35 +230,31 @@ function drawBlendLabel(svgEl, gAnim, text, x, y) {
 }
 
 
+function drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, destKey, opts = {}) {
+  const center = getPointXY(pointMemory, "center");
+  const pV1 = getPointXY(pointMemory, v1);
+  const pV2 = getPointXY(pointMemory, v2);
+  const dest = getPointXY(pointMemory, destKey);
 
-function drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, opts = {}) {
-  const c = pointMemory["center"];
-  if (!c) return 0;
+  if (!center || !pV1 || !pV2 || !dest) return 0;
 
-  const center = { x: Number(c.x), y: Number(c.y) };
-
-  const pV1 = polarToXYFromMemory(pointMemory, v1);
-  const pV2 = polarToXYFromMemory(pointMemory, v2);
-  const dest = computeBlendDestination(pointMemory, v1, v2);
-
-  if (!pV1 || !pV2 || !dest) return 0;
-
-  // 1) Guides in light gray (center -> each vowel)
+  // Gray guides (these will now be correct angles)
   drawGuideArrow(svgEl, gAnim, center, pV1);
   drawGuideArrow(svgEl, gAnim, center, pV2);
 
-  // 2) Blend arrow (center -> computed destination)
+  // Blend arrow: center -> dest
   const durationMs = drawArrowToPoint(svgEl, gAnim, center, dest, {
     kind: "blend",
     pxPerSec: opts.pxPerSec ?? 900,
     headAt: opts.headAt ?? 0.88
   }) || 400;
 
-  // 3) Label at the blend destination (OE shown as "(OE)")
+  // Label at destination
   drawBlendLabel(svgEl, gAnim, `(${v1}${v2})`, dest.x, dest.y);
 
   return durationMs;
 }
+
 
 
 
@@ -407,8 +388,53 @@ function drawArrow(gAnim, pointMemory, from, to, opts = {}) {
 	}
 
 
-const moves = [];
-const state = { lastToken: null };
+function getPointXY(pointMemory, key) {
+  const p = pointMemory?.[key];
+  if (!p) return null;
+
+  const x = Number(p.x);
+  const y = Number(p.y);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  
+  
+  // Center is ALWAYS absolute
+  if (key === "center") return { x, y };
+
+  // 1) Explicit absolute points (recommended for blend destinations)
+  if (p.abs === true) return { x, y };
+
+  // 2) Synthetic blend points should always be treated as absolute
+  if (typeof key === "string" && key.startsWith("blend:")) {
+    return { x, y };
+  }
+
+  // 3) If we have a center and radius, we can detect relative (dx,dy) points
+  const c = pointMemory?.["center"];
+  if (c) {
+    const cx = Number(c.x);
+    const cy = Number(c.y);
+    const r = Number(c.radius);
+
+    if (Number.isFinite(cx) && Number.isFinite(cy) && Number.isFinite(r) && r > 0) {
+      // Heuristic: relative points typically fall within about +-radius,
+      // whereas absolute points are near center +/- radius (e.g., ~330 +/- r).
+      const looksRelative =
+        Math.abs(x) <= 2 * r &&
+        Math.abs(y) <= 2 * r &&
+        (Math.abs(cx) > 50 || Math.abs(cy) > 50);
+
+      if (looksRelative) {
+        return { x: cx + x, y: cy + y };
+      }
+    }
+  }
+
+  // 4) Default: treat as absolute SVG coordinates
+  return { x, y };
+}
+
+
+
 
 
 function addMove(from, to, kind) {
@@ -420,6 +446,14 @@ function addMove(from, to, kind) {
 
 
 function cleanseAndTokenizeQuery(raw, pointMemory) {
+	const moves = [];
+	const state = { lastToken: null };
+	
+	
+	Object.keys(pointMemory).forEach(k => {
+  if (k.startsWith("blend:")) delete pointMemory[k];
+});
+
 		  const DIP = ["th", "sh", "ch", "zh"];
 		  const BLEND_VOWELS = new Set(["A", "E", "I", "O", "U", "ʔ", "Æ"]);
 
@@ -431,11 +465,15 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 
 
 		  
-		 function pushNormalToken(token, moves, pointMemory, state) {
+function pushNormalToken(token, tokens, moves, pointMemory, state) {
   if (!token || !pointMemory[token]) return;
+
+  // Keep a token record (optional but useful)
+  tokens.push(token);
 
   const prev = state.lastToken;
 
+  // Create a normal move from previous token → this token
   if (prev && pointMemory[prev]) {
     moves.push({
       kind: "normal",
@@ -448,38 +486,59 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 }
 
 
-		
-		function pushBlendTokens(blendText, moves, pointMemory, state) {
-  // Allowed vowels for blending
-  const BLEND_VOWELS = new Set(["A", "E", "I", "O", "U", "ʔ", "Æ"]);
 
+
+
+
+function pushBlendTokens(blendText, tokens, moves, pointMemory, state) {
+  const BLEND_VOWELS = new Set(["A","E","I","O","U","ʔ","Æ"]);
   const up = String(blendText || "").toUpperCase();
   const chars = [...up];
-
-  // Must be exactly 2 vowels for now (OE, AI, etc.)
   if (chars.length !== 2) return false;
 
   const [v1, v2] = chars;
-
-  // Validate vowels
   if (!BLEND_VOWELS.has(v1) || !BLEND_VOWELS.has(v2)) return false;
 
-  // Must exist on the wheel
-  if (!pointMemory[v1] || !pointMemory[v2] || !pointMemory["center"]) return false;
 
-  // Emit the single BLEND move structure
-  moves.push({
-    kind: "blend",
-    v1,
-    v2,
-    from: state?.lastToken || null // optional: helpful for debugging / chaining
-  });
+console.log("BLEND INPUT", v1, v2,
+  "center", getPointXY(pointMemory, "center"),
+  v1, getPointXY(pointMemory, v1),
+  v2, getPointXY(pointMemory, v2)
+);
 
-  // The blend "result" becomes v2 for subsequent normal moves
-  if (state) state.lastToken = v2;
+
+  // Compute destination using ABSOLUTE coords (fixed method)
+  const dest = computeBlendDestination(pointMemory, v1, v2);
+  if (!dest) return false;
+
+  // Create a unique destination "token" in pointMemory
+  const blendKey = `blend:${v1}${v2}:${state.blendIndex || 0}`;
+  state.blendIndex = (state.blendIndex || 0) + 1;
+
+  // pointMemory[blendKey] = { x: dest.x, y: dest.y };
+  pointMemory[blendKey] = { x: dest.x, y: dest.y, abs: true };
+
+  // Record token for display/debug
+  // tokens.push(v1, v2);
+  tokens.push(`(${v1}${v2})`);
+
+  // IMPORTANT: add normal move INTO the blend destination if we have a prior token
+  if (state.lastToken && pointMemory[state.lastToken]) {
+    moves.push({ kind: "normal", from: state.lastToken, to: blendKey });
+  }
+
+  // Record the blend move itself (so animator can draw guides + label)
+  moves.push({ kind: "blend", v1, v2, destKey: blendKey });
+  
+  console.log(moves);
+
+  // Now the chain continues from the destination
+  state.lastToken = blendKey;
 
   return true;
 }
+
+
 
 
 
@@ -520,6 +579,11 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 			  k++;
 			}
 		  }
+		  
+		  
+		  
+		  
+		  
 
 		  // 2) Scan left to right
 		  for (let i = 0; i < s.length; ) {
@@ -541,7 +605,8 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 			  // Parenthesized diphthong normalization: (CH) -> (ch)
 			  if (DIP.includes(low)) {
 				cleansed += `(${low})`;
-				pushToken(low);
+				//pushToken(low);
+				pushNormalToken(low, tokens, moves, pointMemory, state);
 				i = j + 1;
 				continue;
 			  }
@@ -554,8 +619,7 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 				[...up].every(ch => BLEND_VOWELS.has(ch));
 
 			  if (isVowelBlend) {
-				  const up = inside.toUpperCase();
-					const didBlend = pushBlendTokens(up, tokens, moves, pointMemory);
+					const didBlend = pushBlendTokens(up, tokens, moves, pointMemory, state);
 
 				if (didBlend) {
 						  cleansed += `(${up})`;
@@ -767,8 +831,8 @@ function parseQueryString(q, pointMemory) {
         <div class="input-group input-group-sm">
           <input type="text"
                  class="form-control lw-query"
-                 value="HUAH"
-                 aria-label="Sound query">
+                 value="MILK"
+                 aria-label="Sound query"  onfocus="this.select();">
           <button class="btn btn-primary lw-run"
                   type="button"
                   aria-label="Run animation">
@@ -855,17 +919,33 @@ function drawGuideArrow(svgEl, gAnim, fromPt, toPt) {
 
 
 
-
 function computeBlendDestination(pointMemory, v1, v2) {
-  const p1 = polarToXYFromMemory(pointMemory, v1);
-  const p2 = polarToXYFromMemory(pointMemory, v2);
-  if (!p1 || !p2) return null;
+  const c = getPointXY(pointMemory, "center");
+  const p1 = getPointXY(pointMemory, v1);
+  const p2 = getPointXY(pointMemory, v2);
+  if (!c || !p1 || !p2) return null;
+  
+  console.log("c"); console.log(c);
+  console.log("p1/p2");  console.log(p1); console.log(p2);
 
-  return {
-    x: (1/3) * p1.x + (1/9) * p2.x,
-    y: (1/3) * p1.y + (1/9) * p2.y
-  };
+  const dx1 = p1.x - c.x;
+  const dy1 = p1.y - c.y;
+  const dx2 = p2.x - c.x;
+  const dy2 = p2.y - c.y;
+  
+   console.log("dx1,dy1");  console.log(dx1); console.log(dy1);
+    console.log("dx2,dy2");  console.log(dx2); console.log(dy2);
+
+  const dx = (1/3) * dx1 + (1/9) * dx2;
+  const dy = (1/3) * dy1 + (1/9) * dy2;
+  
+  console.log("dx,dy"); console.log(dx); console.log(dy);
+
+  return { x: c.x + dx, y: c.y + dy };
 }
+
+
+
 
 
 
@@ -1371,7 +1451,9 @@ $BcontrolCol.on("click", ".lw-run", function () {
   $BcontrolCol.find(".lw-parsed").text(cleansed ? `Parsed: ${cleansed}` : "Parsed: (none)");
 
   
+  console.log(cleansed);
   console.log(tokens);
+  console.log(moves);
   
   // Save for Animate? toggle changes later
 lastParsed = {
@@ -1467,7 +1549,19 @@ $BcontrolCol.on("change", ".lw-animate-toggle", function () {
 
 
 
+$BcontrolCol.on("keydown", ".lw-query", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    $BcontrolCol.find(".lw-run").trigger("click");
+  }
+});
 
+
+
+
+
+console.log("SVG size", svg.getAttribute("width"), svg.getAttribute("height"),
+            "viewBox", svg.getAttribute("viewBox"));
 
 
 
