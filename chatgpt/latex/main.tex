@@ -1,0 +1,78 @@
+\documentclass[11pt,oneside]{memoir}
+
+% ---------- Encoding / fonts ----------
+\usepackage[T1]{fontenc}
+\usepackage{lmodern} % clean, widely available
+\usepackage{microtype} % better kerning/justification
+
+% ---------- Page geometry ----------
+\usepackage[margin=1in]{geometry}
+
+% ---------- Graphics / tables ----------
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+% ---------- Lists & quotes ----------
+\usepackage{enumitem}
+\usepackage{csquotes}
+
+% ---------- Links & references ----------
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalise,nameinlink,noabbrev]{cleveref}
+
+% ---------- Optional: code blocks (if needed later) ----------
+\usepackage{listings}
+
+% ---------- Optional: bibliography (if you cite sources) ----------
+% \usepackage[backend=biber,style=authoryear]{biblatex}
+% \addbibresource{references.bib}
+
+
+% ---------- Document metadata ----------
+\title{%
+  The Egyptian Language Model\\[0.5\baselineskip]
+  \large\itshape
+  Sound, Process, and Semantic Compression
+}
+\author{Monte J. Shaffer}
+\date{January 2026}
+
+\begin{document}
+
+% ----- Front matter -----
+\frontmatter
+\maketitle
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+% ----- Main matter -----
+\mainmatter
+
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\label{chap:preface}
+\input{chapters/00-preface}
+
+
+\chapter{Introduction to Language}
+\chapterprecis{Need for an Engineered Model}
+\label{chap:intro}
+\input{chapters/01-intro}
+
+\chapter{Sounds}
+\chapterprecis{How Air, Geometry, and the Human Voice Form Meaning}
+\label{chap:sounds}
+\input{chapters/02-sounds}
+
+
+% ----- Back matter -----
+\backmatter
+
+% \printbibliography
+% \printindex  % if you add indexing
+
+\end{document}
