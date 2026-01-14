@@ -442,7 +442,7 @@ Conceptually and spatially, M functions as a mediator between breath and structu
 ---
 
 ### 2.8.2 Structural and Continuity Cluster
-
+  
 
 
 #### T — Horizon
