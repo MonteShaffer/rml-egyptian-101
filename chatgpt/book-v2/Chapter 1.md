@@ -165,8 +165,8 @@ To describe this structure precisely, this book introduces a formal framework:
 
 Uncompressed, this stands for:
 
-- **Emergent Process–Operator Model (EPOM)**
-- **Egyptian Semantic-Compression Model (ESCM)**
+- **Emergent Process-based Operational Meaning (EPOM)**
+- **Engineered Semantic Compression Model (ESCM)**
 
 Together, these describe how meaning is generated through operators acting on processes, and how those meanings are compressed, ordered, and nested within sound clusters and symbols.
 
