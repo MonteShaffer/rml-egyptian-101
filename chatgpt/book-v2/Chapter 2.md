@@ -93,7 +93,7 @@ Representation	Our Symbol	IPA Symbol	Sound Descriptor
 Each row in the table represents a phoneme — a unique sound in human language. Phonemes can be broken into three key categories:
 •	Plosives (e.g., /p/, /t/, /k/) — produced by blocking and then releasing airflow.
 •	Fricatives (e.g., /f/, /s/, /ʃ/) — produced by narrowing the airflow, creating a turbulent sound.
-•	Nasals (e.g., /m/, /n/, /ŋ/) — produced by allowing air to pass through the nose.
+•	Nasals (e.g., /m/, /n/) — produced by allowing air to pass through the nose.
 This table reflects the most common phonemes across a broad sample of languages. We use these sound patterns in our model to anchor the Egyptian sound system to modern phonological research.
 By understanding these fundamental sound-building blocks, we gain insight into how Egyptian may have used similar, naturally occurring sounds to form words that describe reality in a structured, process-oriented way.
 
@@ -150,13 +150,14 @@ Each vowel occupies a distinct angular position, separated by 144° from its nei
 
 The most “divine” vowel—**A**—is placed **22 degrees up and to the left** of true vertical. This orientation establishes the entire system.
 
-| Vowel | Domain | Directional Character |
-|------|-------|-----------------------|
-| **A** | Ascent / order | Upward and inward |
-| **I** | Water / flow | Outward and upward |
-| **U** | Divergence / chaos | Outward and downward |
-| **O** | Depth / internality | Inward and downward |
-| **ʔ** | NULL / stop | Boundary / absence |
+| Vowel | Domain              | Directional Character                          | Angle (θ) |
+| ----- | ------------------- | ---------------------------------------------- | --------- |
+| **A** | Ascent / order      | Upward and inward (ordering, celestial)        | **−22° (338°)**  |
+| **I** | Water / flow        | Outward and upward (life, relief)              | **50°**   |
+| **U** | Divergence / chaos  | Outward and downward (destabilizing emergence) | **122°**  |
+| **O** | Depth / internality | Inward and downward (latent, profound)         | **194°**  |
+| **ʔ** | NULL / stop         | Boundary / absence / arrest of motion          | **266°**  |
+
 
 This geometry is not symbolic; it reflects how these sounds are **felt and produced** in the body.
 
@@ -443,7 +444,7 @@ They are **single sounds**, not combinations.
 
 ---
 
-## 2.16 Geometry of Consonants
+## 2.9 Geometry of Consonants
 
 Each consonant occupies a position relative to:
 - inward vs outward,
@@ -459,7 +460,42 @@ Meaning is not arbitrary—it is **geometrically constrained**.
 
 ---
 
-## 2.17 Summary
+## 2.10 Spatial proximity
+
+Before extracting meaning from sound strings, we can understand their spatial relationships along the sound wheel.
+
+### Teeth: "(th)" Sound as Eastern Marker
+One crucial part of the sound production process is the teeth, which play an essential role in certain sounds. For example, the "th" sound (we do not distinguish the two IPA forms), as in think or this, is formed by the tongue and teeth working together. It’s not just about air passing through the mouth, but about the specific interaction between the tongue and the teeth that shapes the tension and resonance of the sound.
+
+Its position is nearly perfectly east to represent a profile view of the human mouth with this midpoint sound (th) defining the easternmost quadrant representing the most external formulation.  Similarly, the glottal stop represents the westernmost quadrant representing the most internal formulation.  To the left, we internalize sound.  To the right we externalize sound.
+
+### Midline of Top of Mouth: "L" sound as Northern Marker
+Say the English word leaf (which in this model is annotated as LIF).  Notice how L is formed with the tongue touching the roof of the mouth.  This is the midline between the internal and external.  The letter D has the tongue touching more forward into the mouth, towards the teeth.  Conversely, the letter Z has the sound formation (not necessarily the tongue) resonating more toward the back of the mouth (towards the glottal stop).  These northerly sounds are elevated.  The more vertical, the more elevated the sound.  An opera singer can hold an "A" sound beautifully for a long time.  This sound is "up and to the left" ascending by slightly internalizing if we use "L" as the Northern marker.  Contrast the beauty of an operic A to a baby crying with a distressed Æ sound.  It is elevating but not internalizing; rather, it is externalizing.  If we were to rank order the primary vowels: [A, I, E, ʔ, U, O] the uppermost can be easily resonated by sopranic voices whereas baritones more beautifully resonate the lower vowel sounds.
+
+Sound formations to the Southern Marker can be anchored to the letter "F".  The consonant "Y" is formed more toward the interior (the glottal stop) wheareas the sound formation moves forward towards the teeth for the letter "B".
+
+Above represents that which is elevated.  Below represents that which is lowly as to things of the earth.  We could analyze the word "humble" H(Aʔ)MBL to see this meaning, but we will save that for later chapters in the book.  For now, let's just consider sound strings based on relative spatial positioning in the geometry.
+
+### Sound string examples
+
+In any language, you can map a sound string to the sound wheel.  Meaning of sound is not fully described yet; however, spatial geometry can already be informative and insightful.
+
+#### Den vs. Dan 
+Say the word "den" DEN and notice where the three sound formations occur.  The "D" forms forward of the "L", then the formation moves downward and slightly backward (as if swallowing), then the formation moves upward again and forward, more forward than the "D" to the "N".  
+
+Contrast this with the word "Dan" DÆN. The "D" forms forward of the "L", then the formation moves upward and outward towards "Æ" and then naturally drops straight down (maybe slightly forward) to form the "N".  Look in the mirror and compare "den" to "Dan".  Notice how much more your mouth physically opens to make this distressed vowel sound "Æ"
+
+Now try the word "need" NID.  Notice again how the order of the sounds is a unique signature: "N" is upward more toward the teeth than "L", "I" is upward/outward, then "D" has the sound formation move inward.
+
+#### Jokes
+We could classify this word as JOKS or JOKZ.  The distinction in the geometry would be the signature differences between "S" and "Z" as the other letters are all similar.  JOKS starts internal and elevated and drops almost straight down, then returns almost straight back in the mouth before advancing externally forcefully with a slight elevation.  JOKZ on the other hand always stays internal, returning from the "K" to "Z" (very close to where it started at "J").  An astute reader should conjecture how those two pronunciations would slightly change the meaning of the plural for "joke" depending on whether its plural is pronounced with an "S" (external explosion) or a "Z" (internal reflection).  You can verify this geometry phenomenon by comparing a "joker" JOKR (everything is internal) to a "jester" JESTR (everything is elevated).  Later, we will bring the meaning of the sounds to the equation to make the insight even more interesting.
+
+#### Milk
+The word "milk" is a good example. We could remember that breath comes from the "H" and naturally flows towards the "U".  On its way out, the lips form the "M" sound and then we move towards the "I" sound.  However, we are moving backward from the natural motion of breath, so lazy language develops so we do not run out of error.  The next letter is "L", so from "M" we start towards "I" but lazily move toward the next letter "L" and then "K".  This is why the vowel is not in its pure form, and can be represented as a blend of (IE) or (Iʔ) as both are somewhat orthogonal to the direct-line move from "M" to "I".
+
+
+
+## 2.11 Summary
 
 Sounds are not random.  
 They arise from breath, shape, effort, and geometry.
