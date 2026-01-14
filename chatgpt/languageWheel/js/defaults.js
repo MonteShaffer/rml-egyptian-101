@@ -37,7 +37,7 @@ const PRIMAL_DEFINITIONS = {
     th: "Tongue–teeth interface; grasping, tearing, or seizing action at a boundary.",
     sh: "Emotional modulation; affective coloring of energy (joy, sorrow, attachment, feeling).",
     zh: "Radiant or shimmering vitality; animated light or expressive energy (definition stabilizing).",
-   J: J: "Discernment; cognitive recognition and evaluation without enactment.",
+   J: "Discernment; cognitive recognition and evaluation without enactment.",
     Z: "Light-from-above; radiant illumination, clarity, or revealed presence.",
     W: "Flow or conveyance; carried motion or passage (definition stabilizing).",
     F: "Administrative regulation; impartial bearing of duty, burden, or governance without judgment."
