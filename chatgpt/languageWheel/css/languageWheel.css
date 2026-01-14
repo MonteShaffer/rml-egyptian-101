@@ -189,6 +189,35 @@ body {
   opacity: 0.85;
 }
 
+.lw-anim-guide {
+  stroke: #cfcfcf;
+  stroke-width: 3;
+  opacity: 0.55;
+  fill: none;
+}
+
+
+.lw-blend-label {
+  font-size: 16px;
+  font-weight: 600;
+  fill: #0d6efd; /* Bootstrap primary blue */
+  opacity: 0.9;
+  user-select: none;
+  pointer-events: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .lw-query {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;

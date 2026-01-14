@@ -32,11 +32,44 @@ const CLASS_MAP = {
   // Helpers
   // -------------------------------
   
-  function renderFinalArrows(moves, pointMemory, gAnim) {
-  // clear current
+  function renderFinalArrows(moves, pointMemory, gAnim, svgEl) {
+  // Clear current
   while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
 
+  const c = pointMemory["center"];
+  const center = c ? { x: Number(c.x), y: Number(c.y) } : null;
+
   for (const m of moves) {
+    if (m.kind === "blend") {
+      // Blend requires center + two vowels
+      if (!center || !m.v1 || !m.v2) continue;
+
+      const pV1 = polarToXYFromMemory(pointMemory, m.v1);
+      const pV2 = polarToXYFromMemory(pointMemory, m.v2);
+      const dest = computeBlendDestination(pointMemory, m.v1, m.v2);
+
+      if (!pV1 || !pV2 || !dest) continue;
+
+      // Optional: light gray guides in static mode too
+      drawGuideArrow(svgEl, gAnim, center, pV1);
+      drawGuideArrow(svgEl, gAnim, center, pV2);
+
+      // Static blend arrow: center -> dest (no dash animation)
+      const line = svgEl("line", {
+        x1: center.x, y1: center.y,
+        x2: dest.x,   y2: dest.y,
+        class: "lw-anim-arrow",
+        "marker-end": "url(#lw-arrowhead)"
+      });
+      gAnim.appendChild(line);
+
+      // Blend label at destination
+      drawBlendLabel(svgEl, gAnim, `(${m.v1}${m.v2})`, dest.x, dest.y);
+
+      continue;
+    }
+
+    // NORMAL move: from -> to
     const p1 = pointMemory[m.from];
     const p2 = pointMemory[m.to];
     if (!p1 || !p2) continue;
@@ -48,16 +81,12 @@ const CLASS_MAP = {
       "marker-end": "url(#lw-arrowhead)"
     });
 
-    // Optional: style blends differently in static mode too
-    if (m.kind === "blend") line.classList.add("lw-anim-arrow-blend");
-
-    // IMPORTANT: no dash animation in static mode
-    line.style.strokeDasharray = "";
-    line.style.strokeDashoffset = "";
-
     gAnim.appendChild(line);
   }
 }
+
+
+
 
 
 function renderFinalArrowsFromTokens(tokens, pointMemory, gAnim) {
@@ -117,7 +146,30 @@ function animateMoves(moves, pointMemory, gAnim, opts = {}) {
     }
 
    const m = moves[i];
-const durationMs = drawArrow(gAnim, pointMemory, m.from, m.to, { kind: m.kind, pxPerSec }) || 400;
+let durationMs = 0;
+
+if (m.kind === "blend") {
+  // BLEND: center → computed blend destination
+  durationMs = drawBlendMove(
+    svgEl,
+    gAnim,
+    pointMemory,
+    m.v1,
+    m.v2,
+    { pxPerSec }
+  ) || 400;
+} else {
+  // NORMAL: token → token
+  durationMs = drawArrow(
+    gAnim,
+    pointMemory,
+    m.from,
+    m.to,
+    { kind: "normal", pxPerSec }
+  ) || 400;
+}
+
+
 
     schedule(() => {
       drawStep(i + 1);
@@ -138,6 +190,92 @@ const durationMs = drawArrow(gAnim, pointMemory, m.from, m.to, { kind: m.kind, p
     }
   };
 }
+
+
+
+function drawArrowToPoint(svgEl, gAnim, from, to, opts = {}) {
+  const x1 = Number(from.x), y1 = Number(from.y);
+  const x2 = Number(to.x),   y2 = Number(to.y);
+
+  const len = Math.hypot(x2 - x1, y2 - y1);
+
+  const line = svgEl("line", { x1, y1, x2, y2, class: "lw-anim-arrow" });
+
+  // dash reveal
+  line.style.strokeDasharray = String(len);
+  line.style.strokeDashoffset = String(len);
+
+  gAnim.appendChild(line);
+
+  // constant-speed timing
+  const pxPerSec = opts.pxPerSec ?? 900;
+  const minMs = opts.minMs ?? 180;
+  const maxMs = opts.maxMs ?? 1200;
+  let durationMs = (len / pxPerSec) * 1000;
+  durationMs = Math.max(minMs, Math.min(maxMs, durationMs));
+
+  requestAnimationFrame(() => {
+    line.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
+    line.style.strokeDashoffset = "0";
+  });
+
+  // delay arrowhead so it doesn't appear too early
+  const headAt = opts.headAt ?? 0.88;
+  setTimeout(() => {
+    if (line.isConnected) line.setAttribute("marker-end", "url(#lw-arrowhead)");
+  }, Math.floor(durationMs * headAt));
+
+  return durationMs;
+}
+
+
+function drawBlendLabel(svgEl, gAnim, text, x, y) {
+  const dx = 8;  // offset so it doesn't sit exactly on arrow tip
+  const dy = -8;
+
+  const t = svgEl("text", {
+    x: x + dx,
+    y: y + dy,
+    class: "lw-blend-label"
+  });
+
+  t.textContent = text;
+  gAnim.appendChild(t);
+  return t;
+}
+
+
+
+function drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, opts = {}) {
+  const c = pointMemory["center"];
+  if (!c) return 0;
+
+  const center = { x: Number(c.x), y: Number(c.y) };
+
+  const pV1 = polarToXYFromMemory(pointMemory, v1);
+  const pV2 = polarToXYFromMemory(pointMemory, v2);
+  const dest = computeBlendDestination(pointMemory, v1, v2);
+
+  if (!pV1 || !pV2 || !dest) return 0;
+
+  // 1) Guides in light gray (center -> each vowel)
+  drawGuideArrow(svgEl, gAnim, center, pV1);
+  drawGuideArrow(svgEl, gAnim, center, pV2);
+
+  // 2) Blend arrow (center -> computed destination)
+  const durationMs = drawArrowToPoint(svgEl, gAnim, center, dest, {
+    kind: "blend",
+    pxPerSec: opts.pxPerSec ?? 900,
+    headAt: opts.headAt ?? 0.88
+  }) || 400;
+
+  // 3) Label at the blend destination (OE shown as "(OE)")
+  drawBlendLabel(svgEl, gAnim, `(${v1}${v2})`, dest.x, dest.y);
+
+  return durationMs;
+}
+
+
 
 
 function drawArrow(gAnim, pointMemory, from, to, opts = {}) {
@@ -270,6 +408,9 @@ function drawArrow(gAnim, pointMemory, from, to, opts = {}) {
 
 
 const moves = [];
+const state = { lastToken: null };
+
+
 function addMove(from, to, kind) {
   if (!from || !to) return;
   if (!pointMemory[from] || !pointMemory[to]) return;
@@ -290,66 +431,56 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 
 
 		  
-		  function pushNormalToken(token, tokens, moves, pointMemory) {
-			  if (!token) return;
+		 function pushNormalToken(token, moves, pointMemory, state) {
+  if (!token || !pointMemory[token]) return;
 
-			  // Only accept known sounds
-			  if (!pointMemory[token]) return;
+  const prev = state.lastToken;
 
-			  const prev = tokens.length ? tokens[tokens.length - 1] : null;
+  if (prev && pointMemory[prev]) {
+    moves.push({
+      kind: "normal",
+      from: prev,
+      to: token
+    });
+  }
 
-			  tokens.push(token);
+  state.lastToken = token;
+}
 
-			  // Record a NORMAL move from previous token → this token
-			  if (prev && pointMemory[prev]) {
-				moves.push({
-				  from: prev,
-				  to: token,
-				  kind: "normal",
-				  step: tokens.length - 2
-				});
-			  }
-			}
 
 		
-		function pushBlendTokens(blendText, tokens, moves, pointMemory) {
-			  // Allowed vowels for blending
-			  const BLEND_VOWELS = new Set(["A", "E", "I", "O", "U", "ʔ", "Æ"]);
+		function pushBlendTokens(blendText, moves, pointMemory, state) {
+  // Allowed vowels for blending
+  const BLEND_VOWELS = new Set(["A", "E", "I", "O", "U", "ʔ", "Æ"]);
 
-			  // blendText is already normalized and uppercased (e.g., "OE", "AʔÆ")
-			  const chars = [...blendText];
+  const up = String(blendText || "").toUpperCase();
+  const chars = [...up];
 
-			  // Validate: ALL characters must be valid blend vowels
-			  if (!chars.every(ch => BLEND_VOWELS.has(ch))) {
-				return false; // caller must fall back to normal parsing
-			  }
+  // Must be exactly 2 vowels for now (OE, AI, etc.)
+  if (chars.length !== 2) return false;
 
-			  // Remember where this blend starts in the token stream
-			  const startIndex = tokens.length;
+  const [v1, v2] = chars;
 
-			  // Push tokens and record BLEND moves explicitly
-			  for (let i = 0; i < chars.length; i++) {
-				const cur = chars[i];
-				if (!pointMemory[cur]) continue;
+  // Validate vowels
+  if (!BLEND_VOWELS.has(v1) || !BLEND_VOWELS.has(v2)) return false;
 
-				tokens.push(cur);
+  // Must exist on the wheel
+  if (!pointMemory[v1] || !pointMemory[v2] || !pointMemory["center"]) return false;
 
-				// Create a BLEND move between consecutive vowels inside the group
-				if (i > 0) {
-				  const prev = chars[i - 1];
-				  if (pointMemory[prev]) {
-					moves.push({
-					  from: prev,
-					  to: cur,
-					  kind: "blend",
-					  step: startIndex + i - 1
-					});
-				  }
-				}
-			  }
+  // Emit the single BLEND move structure
+  moves.push({
+    kind: "blend",
+    v1,
+    v2,
+    from: state?.lastToken || null // optional: helpful for debugging / chaining
+  });
 
-			  return true;
-			}
+  // The blend "result" becomes v2 for subsequent normal moves
+  if (state) state.lastToken = v2;
+
+  return true;
+}
+
 
 
 		  // If a (...) group isn't a valid diphthong or vowel-blend,
@@ -366,7 +497,7 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 				const d = two.toLowerCase();
 				cleansed += `(${d})`;
 				//pushToken(d);
-				pushNormalToken(d, tokens, moves, pointMemory);
+				pushNormalToken(d, tokens, moves, pointMemory, state);
 				k += 2;
 				continue;
 			  }
@@ -374,14 +505,14 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 			  if (/[A-Za-z]/.test(c)) {
 				const up = c.toUpperCase();
 				cleansed += up;
-				pushNormalToken(up, tokens, moves, pointMemory);
+				pushNormalToken(up, tokens, moves, pointMemory, state);
 				k++;
 				continue;
 			  }
 
 			  if (c === "Æ" || c === "ʔ" || c === "ə" || c === "ǁ" || c === "ǀ" || c === "ʘ") {
 				cleansed += c;
-				pushNormalToken(c, tokens, moves, pointMemory);
+				pushNormalToken(c, tokens, moves, pointMemory, state);
 				k++;
 				continue;
 			  }
@@ -428,10 +559,14 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 
 				if (didBlend) {
 						  cleansed += `(${up})`;
+						  
+						  
+						  
+						  
 						} else {
 						  // fallback: parse contents normally, character by character
 						  for (const ch of up) {
-							pushNormalToken(ch, tokens, moves, pointMemory);
+							pushNormalToken(ch, tokens, moves, pointMemory, state);
 							cleansed += ch;
 						  }
 						}
@@ -450,7 +585,7 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 			  const d = two.toLowerCase();
 			  cleansed += `(${d})`;
 			 // pushToken(d);
-			 pushNormalToken(d, tokens, moves, pointMemory);
+			 pushNormalToken(d, tokens, moves, pointMemory, state);
 			  i += 2;
 			  continue;
 			}
@@ -460,7 +595,7 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 			  const up = c.toUpperCase();
 			  cleansed += up;
 			 //pushToken(up);
-			  pushNormalToken(up, tokens, moves, pointMemory);
+			  pushNormalToken(up, tokens, moves, pointMemory, state);
 			  i++;
 			  continue;
 			}
@@ -469,7 +604,7 @@ function cleanseAndTokenizeQuery(raw, pointMemory) {
 			if (c === "Æ" || c === "ʔ" || c === "ə" || c === "ǁ" || c === "ǀ" || c === "ʘ") {
 			  cleansed += c;
 			  //pushToken(c);
-			    pushNormalToken(c, tokens, moves, pointMemory);
+			    pushNormalToken(c, tokens, moves, pointMemory, state);
 			  i++;
 			  continue;
 			}
@@ -682,6 +817,60 @@ function parseQueryString(q, pointMemory) {
 }
 
 
+// blend functions 
+
+function polarToXYFromMemory(pointMemory, token) {
+  const c = pointMemory["center"];
+  const p = pointMemory[token];
+  if (!c || !p) return null;
+
+  // Assumptions:
+  // - c.x, c.y exist (center point)
+  // - c.radius exists
+  // - p.a is angle in degrees for that vowel
+  const cx = Number(c.x), cy = Number(c.y);
+  const r  = Number(c.radius);
+  const aDeg = Number(p.a);
+
+  const a = (aDeg * Math.PI) / 180;
+  return {
+    x: cx + r * Math.cos(a),
+    y: cy + r * Math.sin(a)
+  };
+}
+
+
+function drawGuideArrow(svgEl, gAnim, fromPt, toPt) {
+  const line = svgEl("line", {
+    x1: fromPt.x, y1: fromPt.y,
+    x2: toPt.x, y2: toPt.y,
+    class: "lw-anim-guide",
+    "marker-end": "url(#lw-arrowhead-guide)"
+  });
+  gAnim.appendChild(line);
+  return line;
+}
+
+
+
+
+
+
+function computeBlendDestination(pointMemory, v1, v2) {
+  const p1 = polarToXYFromMemory(pointMemory, v1);
+  const p2 = polarToXYFromMemory(pointMemory, v2);
+  if (!p1 || !p2) return null;
+
+  return {
+    x: (1/3) * p1.x + (1/9) * p2.x,
+    y: (1/3) * p1.y + (1/9) * p2.y
+  };
+}
+
+
+
+
+
 
   function degToRad(deg) {
     return (deg * Math.PI) / 180;
@@ -870,6 +1059,21 @@ marker.appendChild(svgEl("path", {
 }));
 
 defs.appendChild(marker);
+
+// for blend background grey 
+const markerGuide = svgEl("marker", {
+  id: "lw-arrowhead-guide",
+  markerWidth: "10",
+  markerHeight: "10",
+  refX: "7",
+  refY: "3",
+  orient: "auto",
+  markerUnits: "strokeWidth"
+});
+markerGuide.appendChild(svgEl("path", { d: "M0,0 L7,3 L0,6 Z", fill: "#cfcfcf", opacity: "0.55" }));
+defs.appendChild(markerGuide);
+
+
 svg.appendChild(defs);
 
 
@@ -942,7 +1146,7 @@ $BwheelCol.append(svg);
 
 
 const pointMemory = {};
-pointMemory["center"] = {token: "center", x: cx, y: cy, a: 0};
+pointMemory["center"] = {token: "center", x: cx, y: cy, radius: radius};
 
       // -------------------------------
       // Primal vowels on outer radius
@@ -1149,6 +1353,12 @@ $BcontrolCol.on("change", ".lw-toggle", function() {
 // ANIMATION 
 let animCtl = null;
 
+let lastParsed = {
+  tokens: [],
+  moves: [],
+  cleansed: ""
+};
+
 $BcontrolCol.on("click", ".lw-run", function () {
   const q = $BcontrolCol.find(".lw-query").val();
   
@@ -1162,6 +1372,15 @@ $BcontrolCol.on("click", ".lw-run", function () {
 
   
   console.log(tokens);
+  
+  // Save for Animate? toggle changes later
+lastParsed = {
+  cleansed: cleansed || "",
+  tokens: tokens || [],
+  moves: moves || []
+};
+
+
 
   if (animCtl) animCtl.stop();
   
@@ -1171,7 +1390,8 @@ $BcontrolCol.on("click", ".lw-run", function () {
   if (!doAnimate) {
     // Static: show final end state
     if (moves && moves.length) {
-      renderFinalArrows(moves, pointMemory, gAnim);
+      renderFinalArrows(lastParsed.moves, pointMemory, gAnim, svgEl);
+
     } else {
       renderFinalArrowsFromTokens(tokens, pointMemory, gAnim);
     }
@@ -1202,6 +1422,53 @@ $BcontrolCol.on("click", ".lw-btn-clear", function () {
   if (animCtl) animCtl.stop();
   while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
 });
+
+
+
+
+
+
+$BcontrolCol.on("change", ".lw-animate-toggle", function () {
+  const doAnimate = this.checked;
+
+  // Stop any running animation
+  if (animCtl) animCtl.stop();
+
+  // Nothing parsed yet? Nothing to do.
+  const hasMoves = lastParsed.moves && lastParsed.moves.length;
+  const hasTokens = lastParsed.tokens && lastParsed.tokens.length;
+
+  if (!hasMoves && !hasTokens) return;
+
+  if (!doAnimate) {
+    // Switch OFF: show final static arrows immediately
+    if (hasMoves) {
+      renderFinalArrows(lastParsed.moves, pointMemory, gAnim);
+    } else {
+      renderFinalArrowsFromTokens(lastParsed.tokens, pointMemory, gAnim);
+    }
+    return;
+  }
+
+  // Switch ON: restart animation immediately (using last parsed result)
+  if (hasMoves) {
+    animCtl = animateMoves(lastParsed.moves, pointMemory, gAnim, { waitMs: 900, pxPerSec: 900 });
+  } else {
+    animCtl = animateSoundString(lastParsed.tokens, pointMemory, gAnim, { waitMs: 900, pxPerSec: 900 });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
