@@ -4,10 +4,12 @@
 
 
 const CLASS_MAP = {
+	
+  consonants:   { svg: "lw-consonants",    label: "Consonants" },
   primalVowels: { svg: "lw-primal-vowels", label: "Primal Vowels" },
   monadE:       { svg: "lw-monad-e",       label: "Monad E" },
   stressedAE:   { svg: "lw-stressed-ae",   label: "Stressed Æ" },
-  consonants:   { svg: "lw-consonants",    label: "Consonants" }
+  backgroundImage: { svg: "lw-bg-image", label: "Background Image" }
   // clicks:       { svg: "lw-clicks",        label: "Clicks" }
 };
 
@@ -42,6 +44,7 @@ const CLASS_MAP = {
   while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
 
   const c = pointMemory["center"];
+  // const center = getPointXY(pointMemory, "center");
   const center = c ? { x: Number(c.x), y: Number(c.y) } : null;
 
   for (const m of moves) {
@@ -49,15 +52,22 @@ const CLASS_MAP = {
       // Blend requires center + two vowels
       if (!center || !m.v1 || !m.v2) continue;
 
-      const pV1 = polarToXYFromMemory(pointMemory, m.v1);
-      const pV2 = polarToXYFromMemory(pointMemory, m.v2);
+     // const pV1 = polarToXYFromMemory(pointMemory, m.v1);
+      //const pV2 = polarToXYFromMemory(pointMemory, m.v2);
+		const pV1    = getPointXY(pointMemory, m.v1);
+		const pV2    = getPointXY(pointMemory, m.v2);
+
       const dest = computeBlendDestination(pointMemory, m.v1, m.v2);
 
       if (!pV1 || !pV2 || !dest) continue;
 
       // Optional: light gray guides in static mode too
-      drawGuideArrow(svgEl, gAnim, center, pV1);
-      drawGuideArrow(svgEl, gAnim, center, pV2);
+     // drawGuideArrow(svgEl, gAnim, center, pV1);
+    //  drawGuideArrow(svgEl, gAnim, center, pV2);
+	  
+	  // Gray guides with different widths
+drawGuideArrow(svgEl, gAnim, center, pV1, { width: 22 }); // v1 thick
+drawGuideArrow(svgEl, gAnim, center, pV2, { width: 8  }); // v2 thin
 
       // Static blend arrow: center -> dest (no dash animation)
       const line = svgEl("line", {
@@ -250,8 +260,9 @@ function drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, destKey, fromKey, opts
   if (!center || !pV1 || !pV2 || !dest || !fromPt) return 0;
 
   // Gray guides (always from center to the component vowels)
-  drawGuideArrow(svgEl, gAnim, center, pV1);
-  drawGuideArrow(svgEl, gAnim, center, pV2);
+  // Gray guides with different widths
+drawGuideArrow(svgEl, gAnim, center, pV1, { width: 22 }); // v1 thick
+drawGuideArrow(svgEl, gAnim, center, pV2, { width: 8  }); // v2 thin
 
   // Main blue arrow: from previous token (or center if none) -> dest
   const durationMs = drawArrowToPoint(svgEl, gAnim, fromPt, dest, {
@@ -783,6 +794,7 @@ function parseQueryString(q, pointMemory) {
 
   Object.entries(settings.showClasses).forEach(([key, enabled]) => {
     const entry = CLASS_MAP[key];
+	// console.log(entry);
     if (!entry) return;
 
     const cls = entry.svg;
@@ -963,7 +975,9 @@ function polarToXYFromMemory(pointMemory, token) {
 }
 
 
-function drawGuideArrow(svgEl, parent, fromPt, toPt) {
+function drawGuideArrow(svgEl, parent, fromPt, toPt, opts = {}) {
+  const w = opts.width ?? 10;
+
   const line = svgEl("line", {
     x1: fromPt.x, y1: fromPt.y,
     x2: toPt.x,   y2: toPt.y,
@@ -971,17 +985,16 @@ function drawGuideArrow(svgEl, parent, fromPt, toPt) {
     "marker-end": "url(#lw-arrowhead-guide)"
   });
 
-  // Inline style so nothing else can turn it blue
-  /*
   line.setAttribute("stroke", "#cfcfcf");
-  line.setAttribute("stroke-width", "3");
+  line.setAttribute("stroke-width", String(w));      // ✅ variable width
   line.setAttribute("opacity", "0.55");
   line.setAttribute("fill", "none");
-  */
+  line.setAttribute("stroke-linecap", "round");
 
   parent.appendChild(line);
   return line;
 }
+
 
 
 
@@ -1099,6 +1112,7 @@ $BcontrolCol.append($controls);
 
 
 
+
 function buildSoundPalette($root) {
   const sounds = ["A","E","I","O","U","ʔ","Æ","(th)","(sh)","(ch)","(zh)"];
 
@@ -1202,6 +1216,9 @@ const gConsonants   = svgEl("g", { class: "lw-consonants" });
 // Non-toggled geometry (always visible unless you want to toggle it too)
 const gGeometry     = svgEl("g", { class: "lw-geometry" });
 
+const gBackground = svgEl("g", { class: "lw-bg-image" });
+svg.appendChild(gBackground);   // FIRST = behind everything
+
 // Append groups ONCE (order matters for layering)
 svg.appendChild(gGeometry);
 svg.appendChild(gPrimalVowels);
@@ -1215,6 +1232,83 @@ svg.appendChild(gConsonants);
 // Animation overlay group (always on top)
 const gAnim = svgEl("g", { class: "lw-anim-layer" });
 svg.appendChild(gAnim);
+
+
+const bgImg = svgEl("image", {
+  href: "images/background.png",
+  x: 0,
+  y: 0,
+  width: 954,
+  height: 997,
+  opacity: 0.5,
+  "pointer-events": "none",
+  preserveAspectRatio: "none"   // <-- important
+});
+
+
+gBackground.appendChild(bgImg);
+
+
+
+
+
+function applyBackgroundTransform(bgImgEl, pointMemory, opts = {}) {
+  // wheel anchors
+  const lipsToken   = opts.lipsToken ?? "th";
+  const throatToken = opts.throatToken ?? "ʔ";
+
+  const p1 = pointMemory[lipsToken];
+  const p2 = pointMemory[throatToken];
+  if (!p1 || !p2) {
+    console.warn("Missing wheel anchors for background:", lipsToken, throatToken);
+    return;
+  }
+
+  // image anchors (pixels in background.png space)
+  const i1 = opts.imgLips   ?? { x: 828, y: 431 };
+  const i2 = opts.imgThroat ?? { x: 350, y: 450 };
+
+  // vectors
+  const vImgX = i2.x - i1.x, vImgY = i2.y - i1.y;
+  const vTarX = p2.x - p1.x, vTarY = p2.y - p1.y;
+
+  const lenImg = Math.hypot(vImgX, vImgY) || 1;
+  const lenTar = Math.hypot(vTarX, vTarY) || 1;
+
+  // uniform scale
+  const s = (lenTar / lenImg) * (opts.scaleMul ?? 1);
+
+  // rotation (SVG y-axis points down, same as image pixels -> atan2 is consistent)
+  const aImg = Math.atan2(vImgY, vImgX);
+  const aTar = Math.atan2(vTarY, vTarX);
+  const rot = (aTar - aImg) + ((opts.rotDeg ?? 0) * Math.PI / 180);
+
+  const cos = Math.cos(rot), sin = Math.sin(rot);
+
+  // We want:  p = R*s*(i - i1) + p1
+  // Expand to SVG matrix:
+  // [a c e]   where:
+  // a = s*cos, b = s*sin, c = -s*sin, d = s*cos
+  // e = p1.x - (a*i1.x + c*i1.y)
+  // f = p1.y - (b*i1.x + d*i1.y)
+  const a = s * cos;
+  const b = s * sin;
+  const c = -s * sin;
+  const d = s * cos;
+  const e = p1.x - (a * i1.x + c * i1.y) + (opts.dx ?? 0);
+  const f = p1.y - (b * i1.x + d * i1.y) + (opts.dy ?? 0);
+
+  bgImgEl.setAttribute("transform", `matrix(${a} ${b} ${c} ${d} ${e} ${f})`);
+}
+
+
+
+
+
+
+
+
+
 
 // arrows   // marker-end="url(#lw-arrowhead)"
 const defs = svgEl("defs");
@@ -1282,6 +1376,7 @@ svg.appendChild(defs);
 $BwheelCol.append(svg);
 
 
+
       const cx = size / 2;
       const cy = size / 2;
 
@@ -1338,6 +1433,7 @@ $BwheelCol.append(svg);
 
 const pointMemory = {};
 pointMemory["center"] = {token: "center", x: cx, y: cy, radius: radius};
+applyVisibilityFromShowClasses(settings.showClasses, svg);
 
       // -------------------------------
       // Primal vowels on outer radius
@@ -1531,6 +1627,27 @@ pointMemory[c.token] = {token:c.token, x: p.x, y: p.y, a: c.theta};
 */
 
 console.log(pointMemory);
+
+const IMG_ANCHOR_LIPS   = { x: 828, y: 431 }; // mouth opening
+const IMG_ANCHOR_THROAT = { x: 350,  y: 450 }; // glottis/throat area
+
+applyBackgroundTransform(bgImg, pointMemory, {
+  imgLips:   { x: 828, y: 431 },
+  imgThroat: { x: 350, y: 450 },
+  lipsToken: "th",
+  throatToken: "ʔ",
+
+  // optional fine tuning:
+   rotDeg: -10,
+  // scaleMul: 1,
+  // dx: 0,
+   dy: -50
+});
+
+
+
+  
+  
 /* end of SVG */
 
 
@@ -1557,6 +1674,10 @@ $BcontrolCol.on("click", ".lw-run", function () {
   const { cleansed, tokens, moves } = cleanseAndTokenizeQuery(q, pointMemory);
   
   addRunToHistory($BcontrolCol, cleansed);
+  // Update URL hash so it stays shareable for any run (Enter or arrow click)
+	//window.location.hash = "sound-" + encodeURIComponent(cleansed);
+	window.location.hash = "sound-" + (cleansed);
+
   
   // const tokens = parseQueryString(q, pointMemory);
   
@@ -1883,6 +2004,42 @@ $BcontrolCol.on("click", ".lw-history-clear", function () {
 renderHistoryList($BcontrolCol, loadHistoryFromStorage());
 
 
+function isBackgroundImageVisible(svg) {
+  if (!svg || typeof svg.querySelector !== "function") return false;
+
+  const el = svg.querySelector(".lw-bg-image");
+  // console.log(window.getComputedStyle(el).display);
+  if (!el) return false;
+
+  return window.getComputedStyle(el).display !== "none";
+}
+
+
+
+function determineBackgroundState($BcontrolCol, settings, svg) {
+  const desired = !!settings?.showClasses?.backgroundImage;
+  const actual  = isBackgroundImageVisible(svg);
+  
+  console.log(desired); console.log(actual);
+
+  const $cb = $BcontrolCol.find("#lw-toggle-backgroundImage");
+  if ($cb.length === 0) return;
+
+  if (desired !== actual) {
+    $cb.trigger("click", { programmatic: true });
+  }
+  
+  if(!desired)
+  {
+	  $cb.trigger("click", { programmatic: true });
+  }
+ 
+}
+
+
+
+determineBackgroundState($BcontrolCol, settings, svg);
+
 
 
 
@@ -1891,3 +2048,80 @@ renderHistoryList($BcontrolCol, loadHistoryFromStorage());
     });
   };
 })(jQuery);
+
+
+
+
+
+/* ============================================================================
+ * languageWheel.js — Table of Contents (current functions)
+ * ----------------------------------------------------------------------------
+ * 0) Plugin Wrapper / Globals
+ *    - CLASS_MAP (const)
+ *    - PRIMAL_DEFINITIONS (const via window.PRIMAL_DEFINITIONS)
+ *
+ * 1) Definitions
+ *    - defText(token)
+ *
+ * 2) Static Rendering
+ *    - renderFinalArrows(moves, pointMemory, gAnim, svgEl)
+ *    - renderFinalArrowsFromTokens(tokens, pointMemory, gAnim)
+ *
+ * 3) Animation (Moves-based: current)
+ *    - animateMoves(moves, pointMemory, gAnim, opts = {})
+ *      - clearAnim()                [inner]
+ *      - schedule(fn, ms)           [inner]
+ *      - drawStep(i)                [inner]
+ *
+ * 4) Arrow / Blend Drawing Primitives
+ *    - drawArrowToPoint(svgEl, gAnim, from, to, opts = {})
+ *    - drawBlendLabel(svgEl, gAnim, text, x, y)
+ *    - drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, opts = {})
+ *    - drawArrow(gAnim, pointMemory, from, to, opts = {})
+ *
+ * 5) Animation (Tokens-based: legacy / duplicate path)
+ *    - animateSoundString(tokens, pointMemory, gAnim, opts = {})
+ *      - clearAnim()                [inner]
+ *      - schedule(fn, ms)           [inner]
+ *      - drawStep(i)                [inner]
+ *      - loopRestart()              [inner]
+ *
+ * 6) Parsing + Move Construction
+ *    - addMove(from, to, kind)
+ *    - cleanseAndTokenizeQuery(raw, pointMemory)
+ *      - pushNormalToken(token, moves, pointMemory, state)   [inner]
+ *      - pushBlendTokens(blendText, moves, pointMemory, state)[inner]
+ *      - parseInline(chunk)                                  [inner]
+ *    - formatParsedTokens(tokens)
+ *    - parseQueryString(q, pointMemory)
+ *      - resolveToken(t, pm)                                 [inner]
+ *      - greedyParseChunk(chunk, sortedTokens, pm)           [inner]
+ *
+ * 7) Show/Hide Classes
+ *    - applyVisibilityFromShowClasses(settings, svg)
+ *
+ * 8) Admin Panel / UI Construction
+ *    - buildControlsPanel(settings)
+ *      - addRow(token)                                       [inner]
+ *
+ * 9) Geometry Helpers (Polar / Blend Math)
+ *    - polarToXYFromMemory(pointMemory, token)
+ *    - drawGuideArrow(svgEl, gAnim, fromPt, toPt)
+ *    - computeBlendDestination(pointMemory, v1, v2)
+ *    - degToRad(deg)
+ *    - polarToXY(cx, cy, r, thetaDeg)
+ *
+ * 10) SVG Helpers
+ *    - svgEl(name, attrs = {})
+ *    - addTitle(node, text)
+ *
+ * ----------------------------------------------------------------------------
+ * Notes:
+ * - There are two animation systems in-file: animateMoves(...) (primary) and
+ *   animateSoundString(...) (legacy). Consider consolidating later.
+ * - Nested functions listed as [inner] live inside their parent function.
+ * ============================================================================
+ */
+ 
+ // https://study.com/cimages/multimages/16/vocal_tract_overview8820776905474252399.jpg
+ 

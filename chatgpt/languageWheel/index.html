@@ -14,6 +14,8 @@
 >
 
   <link rel="stylesheet" href="css/languageWheel.css" />
+  
+  
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   
   <!-- Bootstrap JS -->
@@ -31,30 +33,31 @@
   </div>
 
   <script>
-    $(function () {
-      $("#wheel").languageWheel({
-        radiusPx: 300,
-        paddingFactor: 0.10,
-
-        // show/hide wheel classes
-        showClasses: {
-						
-          primalVowels: true,
-          consonants: true,
-          clicks: false,
+    $(function () 
+	{
+	
+	const wheelOpts = 
+		{
+		radiusPx: 300,
+		paddingFactor: 0.10,
+		
+		showClasses: {
+		  backgroundImage: false, // default off (you can make true)
+		  primalVowels: true,
+		  consonants: true,
 		  monadE: true,
-			stressedAE: true
-        },
+		  stressedAE: true
+		},
 
-        // geometry
-        showCenterLines: true,
-        showInnerCircles: true,
-        showRadials: true,
-        showPentagram: true,
+		showCenterLines: true,
+		showInnerCircles: true,
+		showRadials: true,
+		showPentagram: true
+		};
 
-        // definitions UI
-        showDefinitionsPanel: true
-      });
+
+	$("#wheel").languageWheel(wheelOpts);
+      
     });
   </script>
 </body>
