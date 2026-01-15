@@ -105,6 +105,47 @@ body { background: var(--page-bg); color: var(--text); }
 .chapter h2{ margin-bottom: 10px; }
 .chapter .chapter-subtitle{ color: var(--muted); margin-bottom: 16px; }
 
+
+/* Prefix RHS TOC links with their computed enumeration */
+.chapter-toc a[data-id]::before{
+  content: attr(data-id) " ";
+  color: rgba(255,255,255,.65);
+  font-variant-numeric: tabular-nums;
+}
+
+.chapter-toc .toc-nest a[data-id]::before{
+  color: rgba(255,255,255,.55);
+}
+
+
+/* Show enumeration on headings without changing text */
+.chapter > h2[data-enum]::before,
+.section > h3[data-enum]::before,
+.subsection > h4[data-enum]::before{
+  content: attr(data-enum) " ";
+  color: rgba(255,255,255,.65);
+  font-variant-numeric: tabular-nums;
+  margin-right: 0.25rem;
+}
+
+
+.chapter > h2[data-enum],
+.section > h3[data-enum],
+.subsection > h4[data-enum]{
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 0.5rem;
+  align-items: baseline;
+}
+
+.chapter > h2[data-enum]::before,
+.section > h3[data-enum]::before,
+.subsection > h4[data-enum]::before{
+  content: attr(data-enum);
+}
+
+
+
 /* Per-chapter RHS TOC (floats but lives inside chapter markup) */
 /* Default (no JS): show TOC inline where it is in the chapter */
 .right-toc{

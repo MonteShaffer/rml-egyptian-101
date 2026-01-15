@@ -76,35 +76,39 @@ function getCurrentChapterElement() {
 
 
 function setEnumData(sectionEl, headingEl, enumLabel) {
-  // Put on both so you can style either way
-  sectionEl.dataset.enum = enumLabel;
-  if (headingEl) headingEl.dataset.enum = enumLabel;
+  // Put on section so enumeration is discoverable even if heading is missing
+  if (sectionEl) sectionEl.dataset.enum = enumLabel;
+
+  // Put on heading for CSS ::before
+  if (headingEl && headingEl.dataset) headingEl.dataset.enum = enumLabel;
 }
+
 
 
 // Compute enumeration map without modifying DOM
 // Returns { chapters: [...], itemsById: Map(id -> {type, enum, title, headingEl}) }
+// Compute enumeration map (sets data-enum attributes; does NOT change heading text)
+// Returns { chapters: [...], itemsById: Map(id -> {type, enum, title, headingEl, el, ...}) }
 function computeEnumerationModel() {
   const chapters = Array.from(document.querySelectorAll("section.chapter[id]"));
   const itemsById = new Map();
 
   chapters.forEach((chEl, chIndex0) => {
     const chNum = chIndex0 + 1;
+    const chEnum = `${chNum}`;
     const chId = chEl.id;
 
     // chapter title from immediate h2
     const chH = findImmediateHeading(chEl, "h2");
     let chTitle = chH ? chH.textContent.trim() : "PLACEHOLDER";
-	// let chTitle  = chH  ? stripLeadingEnum(chH.textContent)  : "PLACEHOLDER";
-    if (!chH) warnMissingTitle(chId, `${chNum}`, "h2");
-	
-	const chEnum = `${chNum}`;
-setEnumData(chEl, chH, chEnum);
+    if (!chH) warnMissingTitle(chId, chEnum, "h2");
 
+    // apply enums to DOM (section + heading)
+    setEnumData(chEl, chH, chEnum);
 
     itemsById.set(chId, {
       type: "chapter",
-      enum: `${chNum}`,
+      enum: chEnum,
       title: chTitle,
       headingEl: chH || null,
       el: chEl,
@@ -119,13 +123,10 @@ setEnumData(chEl, chH, chEnum);
       const secEnum = `${chNum}.${secNum}`;
 
       const secH = findImmediateHeading(secEl, "h3");
-	  
-	  setEnumData(secEl, secH, secEnum);
-	  
-	  
       let secTitle = secH ? secH.textContent.trim() : "PLACEHOLDER";
-	  //let secTitle = secH ? stripLeadingEnum(secH.textContent) : "PLACEHOLDER";
-      if (!secH) warnMissingTitle(secId, `${secEnum}`, "h3");
+      if (!secH) warnMissingTitle(secId, secEnum, "h3");
+
+      setEnumData(secEl, secH, secEnum);
 
       itemsById.set(secId, {
         type: "section",
@@ -144,12 +145,10 @@ setEnumData(chEl, chH, chEnum);
         const subEnum = `${chNum}.${secNum}.${letter}`; // e.g., 1.1.a
 
         const subH = findImmediateHeading(subEl, "h4");
-		
-		setEnumData(subEl, subH, subEnum);
-		
         let subTitle = subH ? subH.textContent.trim() : "PLACEHOLDER";
-		//let subTitle = subH ? stripLeadingEnum(subH.textContent) : "PLACEHOLDER";
-        if (!subH) warnMissingTitle(subId, `${subEnum}`, "h4");
+        if (!subH) warnMissingTitle(subId, subEnum, "h4");
+
+        setEnumData(subEl, subH, subEnum);
 
         itemsById.set(subId, {
           type: "subsection",
@@ -166,6 +165,9 @@ setEnumData(chEl, chH, chEnum);
 
   return { chapters, itemsById };
 }
+
+
+
 
 // ---------- Function 1: generateRHS (console output only) ----------
 // generateRHS() => uses current chapter
@@ -261,42 +263,8 @@ ${navLines.join("\n")}
 
 // ---------- Function 2: generateEnumeration (modifies content headings) ----------
 function generateEnumeration() {
-  const model = computeEnumerationModel();
-
-  // Apply to headings (idempotent and reversible-ish)
-  // Strategy:
-  // - store original heading text once in data-orig-title
-  // - set heading text to `${enum} ${orig}`
-  // - mark data-enum-applied = enum
-  for (const [id, item] of model.itemsById.entries()) {
-    const { type, enum: enumLabel, headingEl } = item;
-
-    // Only enumerate chapter/section/subsection headings as per your convention
-    const expectedTag = type === "chapter" ? "h2" : type === "section" ? "h3" : "h4";
-
-    if (!headingEl) {
-      // warning already emitted by computeEnumerationModel
-      continue;
-    }
-
-    if (headingEl.tagName.toLowerCase() !== expectedTag) {
-      // Unexpected header type (still apply, but warn)
-      console.log(
-        `"id"=${id} classified as ${enumLabel} :: found <${headingEl.tagName.toLowerCase()}> but expected <${expectedTag}>.  Applying enumeration anyway.`
-      );
-    }
-
-    // Save original title once
-    if (!headingEl.dataset.origTitle) {
-      headingEl.dataset.origTitle = headingEl.textContent.trim();
-    }
-
-    const orig = headingEl.dataset.origTitle || headingEl.textContent.trim();
-    headingEl.textContent = `${enumLabel} ${orig}`;
-    headingEl.dataset.enumApplied = enumLabel;
-  }
-
-  console.log("generateEnumeration: applied numbering to headings.");
+  computeEnumerationModel(); // side effect: sets data-enum on sections/headings
+  console.log("generateEnumeration: data-enum attributes applied (no text modified).");
 }
 
 // Expose to DevTools console
