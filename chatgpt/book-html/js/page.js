@@ -22,6 +22,14 @@ function headerHeight() {
 // console.debug("headerHeight():", headerHeight());
 
 
+function stripLeadingEnum(text) {
+  // Matches: "1", "1.2", "1.2.a", "12.3.z" etc + whitespace
+  // and removes it so titles don’t double-prefix.
+  return String(text).replace(/^\s*\d+(?:\.\d+)*(?:\.[a-z]+)?\s+/i, "").trim();
+}
+
+
+
   // ---------- Enumeration helpers ----------
 
 // 1 -> "a", 2 -> "b", ...
@@ -66,6 +74,14 @@ function getCurrentChapterElement() {
 }
 
 
+
+function setEnumData(sectionEl, headingEl, enumLabel) {
+  // Put on both so you can style either way
+  sectionEl.dataset.enum = enumLabel;
+  if (headingEl) headingEl.dataset.enum = enumLabel;
+}
+
+
 // Compute enumeration map without modifying DOM
 // Returns { chapters: [...], itemsById: Map(id -> {type, enum, title, headingEl}) }
 function computeEnumerationModel() {
@@ -79,7 +95,12 @@ function computeEnumerationModel() {
     // chapter title from immediate h2
     const chH = findImmediateHeading(chEl, "h2");
     let chTitle = chH ? chH.textContent.trim() : "PLACEHOLDER";
+	// let chTitle  = chH  ? stripLeadingEnum(chH.textContent)  : "PLACEHOLDER";
     if (!chH) warnMissingTitle(chId, `${chNum}`, "h2");
+	
+	const chEnum = `${chNum}`;
+setEnumData(chEl, chH, chEnum);
+
 
     itemsById.set(chId, {
       type: "chapter",
@@ -98,7 +119,12 @@ function computeEnumerationModel() {
       const secEnum = `${chNum}.${secNum}`;
 
       const secH = findImmediateHeading(secEl, "h3");
+	  
+	  setEnumData(secEl, secH, secEnum);
+	  
+	  
       let secTitle = secH ? secH.textContent.trim() : "PLACEHOLDER";
+	  //let secTitle = secH ? stripLeadingEnum(secH.textContent) : "PLACEHOLDER";
       if (!secH) warnMissingTitle(secId, `${secEnum}`, "h3");
 
       itemsById.set(secId, {
@@ -118,7 +144,11 @@ function computeEnumerationModel() {
         const subEnum = `${chNum}.${secNum}.${letter}`; // e.g., 1.1.a
 
         const subH = findImmediateHeading(subEl, "h4");
+		
+		setEnumData(subEl, subH, subEnum);
+		
         let subTitle = subH ? subH.textContent.trim() : "PLACEHOLDER";
+		//let subTitle = subH ? stripLeadingEnum(subH.textContent) : "PLACEHOLDER";
         if (!subH) warnMissingTitle(subId, `${subEnum}`, "h4");
 
         itemsById.set(subId, {
@@ -173,10 +203,15 @@ function generateRHS(chapterElOrId) {
     const secItem = model.itemsById.get(secId);
     const secEnum = secItem?.enum || "";
     const secTitle = secItem?.title || "PLACEHOLDER";
-
+/*
     navLines.push(
       `    <a href="#${secId}" data-id="${secEnum}" data-target="${secId}">${secEnum} ${secTitle}</a>`
     );
+	*/
+	
+	navLines.push(
+  `    <a href="#${secId}" data-id="${secEnum}" data-target="${secId}">${secTitle}</a>`
+);
 
     const subs = Array.from(secEl.querySelectorAll(":scope > section.subsection[id]"));
     if (subs.length) {
@@ -186,10 +221,17 @@ function generateRHS(chapterElOrId) {
         const subItem = model.itemsById.get(subId);
         const subEnum = subItem?.enum || "";
         const subTitle = subItem?.title || "PLACEHOLDER";
-
+/*
         navLines.push(
           `      <a href="#${subId}" data-id="${subEnum}" data-target="${subId}">${subEnum} ${subTitle}</a>`
         );
+*/		
+	navLines.push(
+  `      <a href="#${subId}" data-id="${subEnum}" data-target="${subId}">${subTitle}</a>`
+);	
+		
+		
+		
       });
       navLines.push(`    </div>`);
     }
@@ -262,6 +304,8 @@ function generateEnumeration() {
 window.generateRHS = generateRHS;
 window.generateEnumeration = generateEnumeration;
 
+
+
 // console usage 
 // find section class=chapter by its id, and the console will spit out the necessary HTML to build out the RHS sidebar navigation
 //generateRHS("ch1");
@@ -319,15 +363,28 @@ function showChapterTOC(chapterId) {
     el.style.display = "none";
   });
 
-  // Show matching chapter TOC
-  const toc = document.querySelector(`aside.chapter-toc[data-for-chapter="${chapterId}"]`);
+  // Show the TOC for this chapter
+  const sel = `aside.chapter-toc[data-for-chapter="${chapterId}"]`;
+  const toc = document.querySelector(sel);
   if (toc) toc.style.display = "";
 
-  // Sync LHS active state (safe for any chapterId)
-  const $left = $("#tocLeft");
-  $left.find("a").removeClass("active");
-  $left.find(`a[href="#${CSS.escape(chapterId)}"]`).addClass("active");
+  // Sync LHS active chapter link (safe even if IDs contain special chars)
+  const left = document.getElementById("tocLeft");
+  if (left) {
+    left.querySelectorAll("a").forEach((a) => a.classList.remove("active"));
+
+    // Use attribute selector rather than CSS.escape dependency
+    const a = left.querySelector(`a[href="#${chapterId}"]`);
+    if (a) a.classList.add("active");
+  }
 }
+
+
+
+// temp 
+window.showChapterTOC = showChapterTOC;
+
+
 
 
   // Optional: highlight local TOC item as you scroll sections within a chapter
@@ -445,10 +502,29 @@ function wireChapterDetection() {
 
   // --------- Boot ----------
   $(function () {
-    buildLeftTOC();
-    attachClipboardButtons();
-    wireChapterDetection();
-    wireLocalTOCActiveState();
+	  
+	  // 1) Mark JS enabled FIRST so CSS contract is predictable
+  document.documentElement.classList.add("js-enabled");
+  
+  
+  // 2) Optional: auto-enumerate BEFORE any TOC/detection so headings are stable
+  if (document.documentElement.classList.contains("auto-enumerate")) {
+    generateEnumeration();
+  }
+  
+   // 3) Build UI + behaviors
+  buildLeftTOC();
+  attachClipboardButtons();
+  
+  
+   // IMPORTANT: wireChapterDetection must exist and call showChapterTOC internally
+  wireChapterDetection();
+  
+  
+  
+  // If you’re still using this, it’s fine, but it should not be required for RHS TOC anymore
+  wireLocalTOCActiveState();
+	
 
     // DataTables demo (optional)
     const tbl = $("#demoTable");
@@ -472,13 +548,11 @@ function wireChapterDetection() {
   
   
   
-  document.documentElement.classList.add("js-enabled");
   
   
   
-  if (document.documentElement.classList.contains("auto-enumerate")) {
-    generateEnumeration();
-  }
+  
+ 
   
   
   

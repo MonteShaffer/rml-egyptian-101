@@ -12,6 +12,22 @@
   --muted: rgba(255,255,255,.65);
 }
 
+/* Medium screens: shrink RHS + reduce offset */
+@media (max-width: 1400px){
+  :root{
+    --right-w: 220px;
+    --right-offset: 20px;
+  }
+}
+
+/* Smaller screens: hide RHS entirely (use in-content TOC instead) */
+@media (max-width: 1200px){
+  .js-enabled .right-toc{
+    display: none !important;
+  }
+}
+
+
 body { background: var(--page-bg); color: var(--text); }
 
 .muted{ color: var(--muted); }
@@ -84,24 +100,30 @@ body { background: var(--page-bg); color: var(--text); }
   border: 1px solid var(--panel-border);
   background: rgba(255,255,255,.03);
   border-radius: 18px;
+  max-width: 980px;   /* tune to taste: 900–1100 */
 }
 .chapter h2{ margin-bottom: 10px; }
 .chapter .chapter-subtitle{ color: var(--muted); margin-bottom: 16px; }
 
 /* Per-chapter RHS TOC (floats but lives inside chapter markup) */
-/* Default (no JS): show the RHS TOCs where they live in the chapter */
-.right-toc { 
-display: block; position: static; width: auto; max-height: none; overflow: visible; }
+/* Default (no JS): show TOC inline where it is in the chapter */
+.right-toc{
+  display: block;
+  position: static;
+  width: auto;
+  max-height: none;
+  overflow: visible;
+}
 
-/* With JS enabled: make them floating and only show active */
-.js-enabled .right-toc {
+/* JS-enabled: float it and let JS decide which one is visible */
+.js-enabled .right-toc{
   position: fixed;
   top: calc(var(--header-h) + var(--right-offset));
   right: var(--right-offset);
   width: var(--right-w);
   max-height: calc(100vh - var(--header-h) - (2 * var(--right-offset)));
   overflow: auto;
-  display: none; /* JS will show the active one */
+  display: none; /* JS will show active chapter TOC */
 }
 
 .right-toc .toc-title{
