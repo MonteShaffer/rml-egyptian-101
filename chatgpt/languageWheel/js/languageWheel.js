@@ -7,8 +7,8 @@ const CLASS_MAP = {
   primalVowels: { svg: "lw-primal-vowels", label: "Primal Vowels" },
   monadE:       { svg: "lw-monad-e",       label: "Monad E" },
   stressedAE:   { svg: "lw-stressed-ae",   label: "Stressed Æ" },
-  consonants:   { svg: "lw-consonants",    label: "Consonants" },
-  clicks:       { svg: "lw-clicks",        label: "Clicks" }
+  consonants:   { svg: "lw-consonants",    label: "Consonants" }
+  // clicks:       { svg: "lw-clicks",        label: "Clicks" }
 };
 
 
@@ -840,14 +840,73 @@ function parseQueryString(q, pointMemory) {
           </button>
         </div>
 
-        <div class="form-text small text-muted">
-          Enter sound string (e.g., A I U ʔ Æ th ch)
-        </div>
+<div class="form-text">
+  <div class="mb-1">
+    Enter sound string (click to insert):
+  </div>
+
+  <div class="lw-palette-special mb-1">
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">(ch)</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">(sh)</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">(th)</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">(zh)</a>
+  </div>
+
+  <div class="lw-palette-vowels">
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">A</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">E</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">I</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">O</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">U</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">Æ</a>
+    <a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">ʔ</a>
+  </div>
+</div>
+
+
+
 		<div class="lw-parsed form-text mt-1 text-muted"></div>
       </div>
 
       <!-- Toggles -->
       <div class="d-flex flex-column gap-2 lw-toggles"></div>
+	  
+	  <div class="lw-samples small mt-2">
+  Samples:
+
+<a href="#" class="lw-insert-sound-string">HELO</a>
+	<span class="text-muted mx-1">|</span>
+	
+<a href="#" class="lw-insert-sound-string">M(IE)LK</a>
+	<span class="text-muted mx-1">|</span>
+	
+<a href="#" class="lw-insert-sound-string">JOKSTR</a>
+	<span class="text-muted mx-1">|</span>
+	
+<a href="#" class="lw-insert-sound-string">JESTR</a>
+	<span class="text-muted mx-1">|</span>
+	
+<a href="#" class="lw-insert-sound-string">HUA</a>
+
+
+
+
+</div>
+
+
+<div class="lw-history mt-3">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="fw-semibold small">History</div>
+    <button type="button" class="btn btn-sm btn-outline-secondary lw-history-clear">Clear</button>
+  </div>
+
+  <div class="list-group list-group-flush lw-history-list mt-2" style="max-height: 190px; overflow-y: auto;">
+    <!-- items appended here -->
+  </div>
+</div>
+
+
+
 
     </div>
   </div>
@@ -1038,6 +1097,33 @@ $BcontrolCol.append($controls);
 
 
 
+
+
+function buildSoundPalette($root) {
+  const sounds = ["A","E","I","O","U","ʔ","Æ","(th)","(sh)","(ch)","(zh)"];
+
+  const $pal = $root.find(".lw-palette").empty();
+
+  sounds.forEach((s, idx) => {
+    //const $a = $(`<a href="#" class="lw-insert-sound">${s}</a>`);
+	const $a = $(`<a href="#" class="lw-insert-sound badge rounded-pill text-bg-light border">${s}</a>`);
+
+    $a.attr("data-sound", s);
+
+    $pal.append($a);
+    if (idx < sounds.length - 1) $pal.append(document.createTextNode(" "));
+  });
+  
+  
+}
+
+buildSoundPalette($BcontrolCol);
+
+
+
+
+
+
 	  
 	  
 /*
@@ -1111,7 +1197,7 @@ const gPrimalVowels = svgEl("g", { class: "lw-primal-vowels" });
 const gMonadE       = svgEl("g", { class: "lw-monad-e" });
 const gStressedAE   = svgEl("g", { class: "lw-stressed-ae" });
 const gConsonants   = svgEl("g", { class: "lw-consonants" });
-const gClicks       = svgEl("g", { class: "lw-clicks" });
+//const gClicks       = svgEl("g", { class: "lw-clicks" });
 
 // Non-toggled geometry (always visible unless you want to toggle it too)
 const gGeometry     = svgEl("g", { class: "lw-geometry" });
@@ -1122,7 +1208,7 @@ svg.appendChild(gPrimalVowels);
 svg.appendChild(gMonadE);
 svg.appendChild(gStressedAE);
 svg.appendChild(gConsonants);
-svg.appendChild(gClicks);
+//svg.appendChild(gClicks);
 
 
 
@@ -1431,6 +1517,7 @@ pointMemory[c.token] = {token:c.token, x: p.x, y: p.y, a: c.theta};
       // -------------------------------
       // Clicks on 1/3 radius ring (optional)
       // -------------------------------
+	  /*
         const rClick = radius * (1 / 3);
 
         settings.clicks.forEach((c) => {
@@ -1441,7 +1528,7 @@ pointMemory[c.token] = {token:c.token, x: p.x, y: p.y, a: c.theta};
           addTitle(t, `${c.token}: ${defText(c.token)}`);
           gClicks.appendChild(t);
         });
-
+*/
 
 console.log(pointMemory);
 /* end of SVG */
@@ -1468,6 +1555,8 @@ $BcontrolCol.on("click", ".lw-run", function () {
   const q = $BcontrolCol.find(".lw-query").val();
   
   const { cleansed, tokens, moves } = cleanseAndTokenizeQuery(q, pointMemory);
+  
+  addRunToHistory($BcontrolCol, cleansed);
   
   // const tokens = parseQueryString(q, pointMemory);
   
@@ -1630,6 +1719,168 @@ $(window).on("hashchange.languageWheel", function () {
   $BcontrolCol.find(".lw-query").val(hashSound);
   $BcontrolCol.find(".lw-run").trigger("click");
 });
+
+
+
+
+
+function insertAtCaret(inputEl, text) {
+  const start = inputEl.selectionStart ?? inputEl.value.length;
+  const end = inputEl.selectionEnd ?? inputEl.value.length;
+
+  const before = inputEl.value.slice(0, start);
+  const after = inputEl.value.slice(end);
+
+  inputEl.value = before + text + after;
+
+  const newPos = start + text.length;
+  inputEl.setSelectionRange(newPos, newPos);
+  inputEl.focus();
+}
+
+
+
+$BcontrolCol.on("click", ".lw-insert-sound", function (e) {
+  e.preventDefault();
+
+  const sound = $(this).text();
+  const inputEl = $BcontrolCol.find(".lw-query").get(0);
+
+  insertAtCaret(inputEl, sound);
+});
+
+
+
+
+$BcontrolCol.on("click", ".lw-insert-sound-string", function (e) {
+  e.preventDefault();
+
+  const s = ($(this).attr("data-sound") || $(this).text() || "").trim();
+  if (!s) return;
+
+  // 1) Put in textbox
+  const $input = $BcontrolCol.find(".lw-query");
+  $input.val(s).trigger("input").focus();
+
+  // 2) Update hash (so the URL is shareable)
+  // Encode to support parentheses etc. [monte: don't encode]
+  window.location.hash = "sound-" + (s);
+
+  // 3) Run as if user clicked arrow / pressed Enter
+  $BcontrolCol.find(".lw-run").trigger("click");
+});
+
+
+
+
+
+
+const LW_HISTORY_KEY = "languageWheel.history.v1";
+const LW_HISTORY_MAX = 200; // keep up to 200 entries (scroll UI still shows ~5)
+
+function fmtHistoryTime(d = new Date()) {
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+
+function loadHistoryFromStorage() {
+  try {
+    const raw = localStorage.getItem(LW_HISTORY_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    // expected: [{ q: "HELO", ts: "YYYY-MM-DD HH:mm:ss" }, ...]
+    return arr
+      .filter(x => x && typeof x.q === "string" && typeof x.ts === "string")
+      .slice(0, LW_HISTORY_MAX);
+  } catch {
+    return [];
+  }
+}
+
+function saveHistoryToStorage(items) {
+  try {
+    localStorage.setItem(LW_HISTORY_KEY, JSON.stringify(items.slice(0, LW_HISTORY_MAX)));
+  } catch {
+    // ignore quota/security errors
+  }
+}
+
+
+function renderHistoryList($BcontrolCol, items) {
+  const $list = $BcontrolCol.find(".lw-history-list").empty();
+
+  items.forEach(({ q, ts }) => {
+    const $item = $(`
+      <a href="#" class="list-group-item list-group-item-action lw-history-item">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="me-2 text-truncate" style="max-width: 70%"></div>
+          <small class="text-muted flex-shrink-0"></small>
+        </div>
+      </a>
+    `);
+
+    $item.attr("data-sound", q);
+    $item.find("div > div").first().text(q);
+    $item.find("small").text(ts);
+
+    $list.append($item);
+  });
+}
+
+
+
+
+
+function addRunToHistory($BcontrolCol, cleansed) {
+  const q = String(cleansed || "").trim();
+  if (!q) return;
+
+  const ts = fmtHistoryTime(new Date());
+  const items = loadHistoryFromStorage();
+
+  // Remove existing duplicate (case-sensitive; change if you want case-insensitive)
+  const existingIndex = items.findIndex(x => x.q === q);
+  if (existingIndex !== -1) items.splice(existingIndex, 1);
+
+  // Add to top
+  items.unshift({ q, ts });
+
+  // Persist + render
+  const trimmed = items.slice(0, LW_HISTORY_MAX);
+  saveHistoryToStorage(trimmed);
+  renderHistoryList($BcontrolCol, trimmed);
+}
+
+
+
+
+$BcontrolCol.on("click", ".lw-history-item", function (e) {
+  e.preventDefault();
+
+  const s = ($(this).attr("data-sound") || "").trim();
+  if (!s) return;
+
+  // Put in textbox
+  $BcontrolCol.find(".lw-query").val(s).trigger("input").focus();
+
+  // Update hash (optional but consistent with your other behavior)
+  window.location.hash = "sound-" + encodeURIComponent(s);
+
+  // Run
+  $BcontrolCol.find(".lw-run").trigger("click");
+});
+
+
+
+$BcontrolCol.on("click", ".lw-history-clear", function () {
+  $BcontrolCol.find(".lw-history-list").empty();
+});
+
+
+
+
+renderHistoryList($BcontrolCol, loadHistoryFromStorage());
 
 
 

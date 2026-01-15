@@ -216,10 +216,37 @@ body {
 
 
 
+.lw-palette a {
+  text-decoration: none;
+  cursor: pointer;
+}
+.lw-palette a:hover {
+  text-decoration: underline;
+}
 
 
 
 
+/* smaller height + tighter rows */
+.lw-history-list .list-group-item {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  font-size: 0.875rem;      /* slightly smaller */
+  line-height: 1.1;
+}
+
+/* zebra shading */
+.lw-history-list .list-group-item:nth-child(odd) {
+  background-color: #f8f9fa; /* very light gray */
+}
+.lw-history-list .list-group-item:nth-child(even) {
+  background-color: #eeeeee; /* slightly darker gray */
+}
+
+/* keep hover readable */
+.lw-history-list .list-group-item:hover {
+  filter: brightness(0.97);
+}
 
 
 
