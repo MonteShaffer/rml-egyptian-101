@@ -185,16 +185,21 @@ body {
 
 .lw-anim-arrow-blend {
   stroke-dasharray: 8 6; /* blend “texture” (the draw-on dash still works because we override inline) */
-  stroke-width: 44;
-  opacity: 0.55;
+  stroke-width: 7;
+  opacity: 0.85;
 }
+
+
+
 
 .lw-anim-guide {
   stroke: #cfcfcf;
-  stroke-width: 3;
-  opacity: 0.55;
+  stroke-width: 12px;   /* very wide */
+  opacity: 0.5;
   fill: none;
+  stroke-linecap: round;
 }
+
 
 
 .lw-blend-label {

@@ -32,6 +32,11 @@ const CLASS_MAP = {
   // Helpers
   // -------------------------------
   
+  
+
+
+
+
   function renderFinalArrows(moves, pointMemory, gAnim, svgEl) {
   // Clear current
   while (gAnim.firstChild) gAnim.removeChild(gAnim.firstChild);
@@ -148,11 +153,14 @@ function animateMoves(moves, pointMemory, gAnim, opts = {}) {
    const m = moves[i];
 let durationMs = 0;
 
+
 if (m.kind === "blend") {
-  durationMs = drawBlendMove(svgEl, gAnim, pointMemory, m.v1, m.v2, m.destKey, { pxPerSec });
+  durationMs = drawBlendMove(svgEl, gAnim, pointMemory, m.v1, m.v2, m.destKey, m.fromKey, { pxPerSec }) || 400;
 } else {
-  durationMs = drawArrow(gAnim, pointMemory, m.from, m.to, { kind: "normal", pxPerSec });
+  durationMs = drawArrow(gAnim, pointMemory, m.from, m.to, { kind: "normal", pxPerSec }) || 400;
 }
+
+
 
 
 
@@ -230,30 +238,35 @@ function drawBlendLabel(svgEl, gAnim, text, x, y) {
 }
 
 
-function drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, destKey, opts = {}) {
+function drawBlendMove(svgEl, gAnim, pointMemory, v1, v2, destKey, fromKey, opts = {}) {
   const center = getPointXY(pointMemory, "center");
   const pV1 = getPointXY(pointMemory, v1);
   const pV2 = getPointXY(pointMemory, v2);
   const dest = getPointXY(pointMemory, destKey);
 
-  if (!center || !pV1 || !pV2 || !dest) return 0;
+  // NEW: start point for the blend's main arrow
+  const fromPt = getPointXY(pointMemory, fromKey) || center;
 
-  // Gray guides (these will now be correct angles)
+  if (!center || !pV1 || !pV2 || !dest || !fromPt) return 0;
+
+  // Gray guides (always from center to the component vowels)
   drawGuideArrow(svgEl, gAnim, center, pV1);
   drawGuideArrow(svgEl, gAnim, center, pV2);
 
-  // Blend arrow: center -> dest
-  const durationMs = drawArrowToPoint(svgEl, gAnim, center, dest, {
+  // Main blue arrow: from previous token (or center if none) -> dest
+  const durationMs = drawArrowToPoint(svgEl, gAnim, fromPt, dest, {
     kind: "blend",
     pxPerSec: opts.pxPerSec ?? 900,
     headAt: opts.headAt ?? 0.88
   }) || 400;
 
-  // Label at destination
   drawBlendLabel(svgEl, gAnim, `(${v1}${v2})`, dest.x, dest.y);
 
   return durationMs;
 }
+
+
+
 
 
 
@@ -388,6 +401,7 @@ function drawArrow(gAnim, pointMemory, from, to, opts = {}) {
 	}
 
 
+
 function getPointXY(pointMemory, key) {
   const p = pointMemory?.[key];
   if (!p) return null;
@@ -395,43 +409,12 @@ function getPointXY(pointMemory, key) {
   const x = Number(p.x);
   const y = Number(p.y);
   if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
-  
-  
-  // Center is ALWAYS absolute
-  if (key === "center") return { x, y };
 
-  // 1) Explicit absolute points (recommended for blend destinations)
-  if (p.abs === true) return { x, y };
-
-  // 2) Synthetic blend points should always be treated as absolute
-  if (typeof key === "string" && key.startsWith("blend:")) {
-    return { x, y };
-  }
-
-  // 3) If we have a center and radius, we can detect relative (dx,dy) points
-  const c = pointMemory?.["center"];
-  if (c) {
-    const cx = Number(c.x);
-    const cy = Number(c.y);
-    const r = Number(c.radius);
-
-    if (Number.isFinite(cx) && Number.isFinite(cy) && Number.isFinite(r) && r > 0) {
-      // Heuristic: relative points typically fall within about +-radius,
-      // whereas absolute points are near center +/- radius (e.g., ~330 +/- r).
-      const looksRelative =
-        Math.abs(x) <= 2 * r &&
-        Math.abs(y) <= 2 * r &&
-        (Math.abs(cx) > 50 || Math.abs(cy) > 50);
-
-      if (looksRelative) {
-        return { x: cx + x, y: cy + y };
-      }
-    }
-  }
-
-  // 4) Default: treat as absolute SVG coordinates
+  // Your pointMemory stores ABSOLUTE SVG coordinates for center and all tokens.
+  // So just return them directly.
   return { x, y };
 }
+
 
 
 
@@ -507,6 +490,9 @@ console.log("BLEND INPUT", v1, v2,
 );
 
 
+
+
+
   // Compute destination using ABSOLUTE coords (fixed method)
   const dest = computeBlendDestination(pointMemory, v1, v2);
   if (!dest) return false;
@@ -514,6 +500,8 @@ console.log("BLEND INPUT", v1, v2,
   // Create a unique destination "token" in pointMemory
   const blendKey = `blend:${v1}${v2}:${state.blendIndex || 0}`;
   state.blendIndex = (state.blendIndex || 0) + 1;
+  
+  console.log("DESTKEY STORE", blendKey, pointMemory[blendKey], "E", pointMemory[v2], "I", pointMemory[v1]);
 
   // pointMemory[blendKey] = { x: dest.x, y: dest.y };
   pointMemory[blendKey] = { x: dest.x, y: dest.y, abs: true };
@@ -522,6 +510,7 @@ console.log("BLEND INPUT", v1, v2,
   // tokens.push(v1, v2);
   tokens.push(`(${v1}${v2})`);
 
+/*
   // IMPORTANT: add normal move INTO the blend destination if we have a prior token
   if (state.lastToken && pointMemory[state.lastToken]) {
     moves.push({ kind: "normal", from: state.lastToken, to: blendKey });
@@ -529,6 +518,17 @@ console.log("BLEND INPUT", v1, v2,
 
   // Record the blend move itself (so animator can draw guides + label)
   moves.push({ kind: "blend", v1, v2, destKey: blendKey });
+  */
+  
+  // Record the blend move itself, including where the path comes from.
+// This REPLACES the normal move into the blend destination.
+moves.push({
+  kind: "blend",
+  v1,
+  v2,
+  destKey: blendKey,
+  fromKey: state.lastToken || "center"
+});
   
   console.log(moves);
 
@@ -904,16 +904,26 @@ function polarToXYFromMemory(pointMemory, token) {
 }
 
 
-function drawGuideArrow(svgEl, gAnim, fromPt, toPt) {
+function drawGuideArrow(svgEl, parent, fromPt, toPt) {
   const line = svgEl("line", {
     x1: fromPt.x, y1: fromPt.y,
-    x2: toPt.x, y2: toPt.y,
+    x2: toPt.x,   y2: toPt.y,
     class: "lw-anim-guide",
     "marker-end": "url(#lw-arrowhead-guide)"
   });
-  gAnim.appendChild(line);
+
+  // Inline style so nothing else can turn it blue
+  /*
+  line.setAttribute("stroke", "#cfcfcf");
+  line.setAttribute("stroke-width", "3");
+  line.setAttribute("opacity", "0.55");
+  line.setAttribute("fill", "none");
+  */
+
+  parent.appendChild(line);
   return line;
 }
+
 
 
 
@@ -1141,17 +1151,32 @@ marker.appendChild(svgEl("path", {
 defs.appendChild(marker);
 
 // for blend background grey 
+// in <defs>
 const markerGuide = svgEl("marker", {
   id: "lw-arrowhead-guide",
   markerWidth: "10",
   markerHeight: "10",
-  refX: "7",
-  refY: "3",
+  refX: "8",
+  refY: "5",
   orient: "auto",
-  markerUnits: "strokeWidth"
+  markerUnits: "userSpaceOnUse" // ← THIS is the magic
 });
-markerGuide.appendChild(svgEl("path", { d: "M0,0 L7,3 L0,6 Z", fill: "#cfcfcf", opacity: "0.55" }));
+
+markerGuide.appendChild(
+  svgEl("path", {
+    d: "M0,0 L10,5 L0,10 Z",
+    fill: "#cfcfcf",
+    opacity: "0.55"
+  })
+);
+
 defs.appendChild(markerGuide);
+
+
+
+
+
+
 
 
 svg.appendChild(defs);
@@ -1525,7 +1550,7 @@ $BcontrolCol.on("change", ".lw-animate-toggle", function () {
   if (!doAnimate) {
     // Switch OFF: show final static arrows immediately
     if (hasMoves) {
-      renderFinalArrows(lastParsed.moves, pointMemory, gAnim);
+      renderFinalArrows(lastParsed.moves, pointMemory, gAnim, svgEl );
     } else {
       renderFinalArrowsFromTokens(lastParsed.tokens, pointMemory, gAnim);
     }
@@ -1563,6 +1588,48 @@ $BcontrolCol.on("keydown", ".lw-query", function (e) {
 console.log("SVG size", svg.getAttribute("width"), svg.getAttribute("height"),
             "viewBox", svg.getAttribute("viewBox"));
 
+
+
+  function getSoundFromHash() {
+  const h = (window.location.hash || "").replace(/^#/, ""); // remove leading #
+  if (!h) return null;
+
+  // Accept: sound-HELO
+  if (!h.toLowerCase().startsWith("sound-")) return null;
+
+  const raw = h.slice("sound-".length);
+  if (!raw) return null;
+
+  // Decode URL encoding (so %28IE%29 works for parentheses)
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
+
+const hashSound = getSoundFromHash();
+if (hashSound) {
+  const $q = $BcontrolCol.find(".lw-query");
+  $q.val(hashSound);
+  
+  console.log(hashSound);
+
+  // Trigger the existing Run click handler
+  // Use a 0ms timeout to ensure DOM is fully in place
+  setTimeout(() => {
+    $BcontrolCol.find(".lw-run").trigger("click");
+  }, 0);
+}
+
+$(window).on("hashchange.languageWheel", function () {
+  const hashSound = getSoundFromHash();
+  if (!hashSound) return;
+
+  $BcontrolCol.find(".lw-query").val(hashSound);
+  $BcontrolCol.find(".lw-run").trigger("click");
+});
 
 
 
