@@ -1,0 +1,196 @@
+:root{
+  --header-h: 80px;
+  --left-w: 300px;
+  --right-w: 260px;
+  --right-offset: 50px;
+
+  --page-bg: #0b1220;
+  --panel-bg: #101a2c;
+  --panel-border: rgba(255,255,255,.08);
+
+  --text: rgba(255,255,255,.9);
+  --muted: rgba(255,255,255,.65);
+}
+
+body { background: var(--page-bg); color: var(--text); }
+
+.muted{ color: var(--muted); }
+
+/* Fixed header */
+.app-header{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  z-index: 1030;
+  background: linear-gradient(180deg, #0f1b33, #0b1220);
+  border-bottom: 1px solid var(--panel-border);
+  display: flex; align-items: center;
+  padding: 0 16px;
+}
+
+/* Left TOC attached under header */
+.left-toc{
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  width: var(--left-w);
+  height: calc(100vh - var(--header-h));
+  background: var(--panel-bg);
+  border-right: 1px solid var(--panel-border);
+  overflow: auto;
+  padding: 12px 10px;
+  z-index: 1020;
+}
+
+.left-toc .toc-title{
+  font-size: .85rem;
+  color: var(--muted);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin: 6px 10px 10px;
+}
+
+.left-toc a{
+  display: block;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+}
+.left-toc a:hover{ background: rgba(255,255,255,.06); }
+.left-toc a.active{ background: rgba(13,110,253,.22); }
+
+/* Main content layout */
+
+.main-content{
+  padding-top: calc(var(--header-h) + 18px);
+
+  /* move content right of fixed LHS TOC */
+  margin-left: calc(var(--left-w) + 20px);
+
+  /* let RHS overlay, keep only a small buffer */
+  padding-right: calc(var(--right-offset) + 20px);
+
+  /* optional: don't cap width while you're tuning layout */
+  max-width: none;
+}
+
+
+
+.chapter{
+  position: relative;
+  padding: 18px 18px;
+  margin: 0 0 18px;
+  border: 1px solid var(--panel-border);
+  background: rgba(255,255,255,.03);
+  border-radius: 18px;
+}
+.chapter h2{ margin-bottom: 10px; }
+.chapter .chapter-subtitle{ color: var(--muted); margin-bottom: 16px; }
+
+/* Per-chapter RHS TOC (floats but lives inside chapter markup) */
+/* Default (no JS): show the RHS TOCs where they live in the chapter */
+.right-toc { 
+display: block; position: static; width: auto; max-height: none; overflow: visible; }
+
+/* With JS enabled: make them floating and only show active */
+.js-enabled .right-toc {
+  position: fixed;
+  top: calc(var(--header-h) + var(--right-offset));
+  right: var(--right-offset);
+  width: var(--right-w);
+  max-height: calc(100vh - var(--header-h) - (2 * var(--right-offset)));
+  overflow: auto;
+  display: none; /* JS will show the active one */
+}
+
+.right-toc .toc-title{
+  font-size: .82rem;
+  color: rgba(255,255,255,.75);
+  margin: 4px 6px 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.right-toc a{
+  display: block;
+  padding: 7px 10px;
+  border-radius: 12px;
+  color: rgba(255,255,255,.78);
+  text-decoration: none;
+  font-size: .95rem;
+}
+.right-toc a:hover{ background: rgba(255,255,255,.07); }
+.right-toc a.active{ background: rgba(255,255,255,.11); }
+
+.toc-nest{
+  margin-left: 10px;
+  padding-left: 8px;
+  border-left: 1px solid rgba(255,255,255,.10);
+}
+
+/* Widgets: takeaway callout */
+.takeaway{
+  border-left: 4px solid rgba(13,110,253,.9);
+  background: rgba(13,110,253,.12);
+  padding: 12px 14px;
+  border-radius: 14px;
+  margin: 12px 0;
+}
+.takeaway .label{
+  font-size: .8rem;
+  color: rgba(255,255,255,.75);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+/* Dialog bubbles */
+.dialog{
+  position: relative;
+  display: flex;
+  margin: 14px 0;
+  gap: 10px;
+}
+.dialog .bubble{
+  max-width: 80%;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--panel-border);
+  background: rgba(255,255,255,.04);
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+.dialog-human{ justify-content: flex-start; }
+.dialog-human .bubble{
+  border-top-left-radius: 6px;
+  background: rgba(255,255,255,.05);
+}
+
+.dialog-chatgpt{ justify-content: flex-end; }
+.dialog-chatgpt .bubble{
+  border-top-right-radius: 6px;
+  background: rgba(34,197,94,.12);
+  border-color: rgba(34,197,94,.28);
+}
+
+/* Clipboard button */
+.clip-btn{
+  position: absolute;
+  top: -10px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: .8rem;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.85);
+  cursor: pointer;
+  user-select: none;
+}
+.clip-btn:hover{ background: rgba(0,0,0,.35); }
+
+/* Position depends on parent dialog class */
+.dialog-human .clip-btn{ left: 8px; }
+.dialog-chatgpt .clip-btn{ right: 8px; }
