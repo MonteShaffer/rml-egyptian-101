@@ -1281,4 +1281,6 @@ aside.chapter-toc.is-hidden{
 }
 
 
+.right-toc.chapter-toc.is-hidden{ display:none !important; }
+
 

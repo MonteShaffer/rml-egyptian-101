@@ -430,20 +430,21 @@ function showChapterTOC(chapterId) {
     return;
   }
 
-  // hide all
+  // Hide all
   tocs.forEach((a) => a.classList.add("is-hidden"));
 
-  // show active
+  // Show matching
   const sel = `aside.right-toc.chapter-toc[data-for-chapter="${CSS.escape(chapterId)}"]`;
   const active = document.querySelector(sel);
 
   if (!active) {
-    console.warn("showChapterTOC: no TOC found for chapter:", chapterId, sel);
+    console.warn("showChapterTOC: no TOC found for chapter:", chapterId);
     return;
   }
 
   active.classList.remove("is-hidden");
 }
+
 
 
 
@@ -500,65 +501,125 @@ window.showChapterTOC = showChapterTOC;
     });
   }
 
+
+
+
+
+
+
+
+function wireTOCClicks() {
+  // One handler for all in-page hash links in the TOCs
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+
+    // Only react to links inside either TOC
+    if (!a.closest(".left-toc") && !a.closest(".chapter-toc")) return;
+
+    const targetId = a.getAttribute("href").slice(1);
+    if (!targetId) return;
+
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) return;
+
+    // Find the chapter containing that target
+    const chapterEl = targetEl.closest("section.chapter[id]");
+    if (chapterEl?.id) {
+      showChapterTOC(chapterEl.id);
+    }
+  });
+
+  // Also handle browser navigation (back/forward) and manual hash edits
+  window.addEventListener("hashchange", () => {
+    const id = location.hash.slice(1);
+    if (!id) return;
+
+    const el = document.getElementById(id);
+    const ch = el?.closest("section.chapter[id]");
+    if (ch?.id) showChapterTOC(ch.id);
+  });
+}
+
+
+
   // Detect which chapter you're in and show its TOC
- 
-function wireChapterDetection() {
+ function wireChapterDetection() {
   const chapters = Array.from(document.querySelectorAll("section.chapter[id]"));
-  if (!chapters.length) return;
+  if (!chapters.length) {
+    console.warn("wireChapterDetection: no section.chapter[id] found");
+    return;
+  }
 
-  // Initial TOC: first chapter, or hash chapter if present
-  const initial =
-    (location.hash && document.getElementById(location.hash.slice(1))?.closest("section.chapter[id]")) ||
-    getCurrentChapterElement() ||
-    chapters[0];
+  let activeId = null;
 
-  showChapterTOC(initial.id);
+  function setActiveChapter(id) {
+    if (!id || id === activeId) return;
+    activeId = id;
+    showChapterTOC(id);
+  }
 
-  // Observe chapters to show correct RHS TOC
-  const obs = new IntersectionObserver(
+  // Use a stable, literal rootMargin (IntersectionObserver requires px/% only)
+  const headerH =
+    parseInt(getComputedStyle(document.documentElement).getPropertyValue("--header-h"), 10) || 80;
+
+  // Trigger when the chapter top crosses below header region
+  const topMarginPx = headerH + 30;
+
+  const io = new IntersectionObserver(
     (entries) => {
-      // choose most visible intersecting chapter
-      const best = entries
-        .filter((e) => e.isIntersecting)
-        .sort((a, b) => (b.intersectionRatio || 0) - (a.intersectionRatio || 0))[0];
+      // Prefer the entry closest to the top that is intersecting
+      const visible = entries.filter((e) => e.isIntersecting);
+      if (!visible.length) return;
 
-      if (!best) return;
-
-      const ch = best.target;
-      if (ch && ch.id) showChapterTOC(ch.id);
+      visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      const best = visible[0]?.target;
+      if (best?.id) setActiveChapter(best.id);
     },
     {
       root: null,
-      rootMargin: `-${headerHeight() + 10}px 0px -60% 0px`,
-      threshold: [0.05, 0.2, 0.35, 0.5],
+      rootMargin: `-${topMarginPx}px 0px -70% 0px`,
+      threshold: 0.01,
     }
   );
 
-  chapters.forEach((ch) => obs.observe(ch));
-  
-  
-  
-  
-  
-  
- // RHS TOC visibility is JS-owned. CSS should never force-hide `.right-toc`. 
-  
-  /*
-  console.log("DEBUG: chapters found =", document.querySelectorAll("section.chapter[id]").length);
-console.log("DEBUG: RHS tocs found =", document.querySelectorAll("aside.chapter-toc").length);
+  chapters.forEach((ch) => io.observe(ch));
 
-const firstCh = document.querySelector("section.chapter[id]");
-if (firstCh) {
-  console.log("DEBUG: showing TOC for", firstCh.id);
-  showChapterTOC(firstCh.id);
-  }
-  */
-  
-  
+  // Initial selection:
+  // 1) if hash points somewhere, show that chapter
+  // 2) else show the first chapter
+ // Initial selection: hash-aware
+if (location.hash) {
+  const id = location.hash.slice(1);
+  const el = document.getElementById(id);
+  const ch = el?.closest("section.chapter[id]");
+  if (ch?.id) showChapterTOC(ch.id);
+} else {
+  const first = document.querySelector("section.chapter[id]");
+  if (first?.id) showChapterTOC(first.id);
+}
 
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -860,17 +921,21 @@ function initAboutAuthorPopover() {
   
   
    // IMPORTANT: wireChapterDetection must exist and call showChapterTOC internally
+  wireTOCClicks();
   wireChapterDetection();
   
   
+wireLocalTOCScrollSpy();
   
+  
+  /*
   // Hide all RHS TOCs by default in JS mode; chapter detection will reveal one
 document.querySelectorAll("aside.chapter-toc").forEach(el => el.classList.add("is-hidden"));
 
 // Force-show first chapter's TOC immediately (prevents “none shown”)
 const firstCh = document.querySelector("section.chapter[id]");
 if (firstCh) showChapterTOC(firstCh.id);
-
+*/
 
 
 // Theme init (default: night)
@@ -898,7 +963,6 @@ initAboutAuthorPopover();
 initEpomPopover(); 
 
 
-wireLocalTOCScrollSpy();
 
 
 
