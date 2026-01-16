@@ -121,6 +121,36 @@ a.nuki = Hebrew
 nu = bigram (looks like a pot)
 
 
+horizontal vertical projection profiles imagemagick
+```
+magick pp.png -threshold 50% -negate -crop x1 -format "%[fx:w*h*mean]\n" info:
+```
+https://stackoverflow.com/questions/69032468/how-to-get-projection-profile-of-image-using-imagemagick-convert
+
+#1 result: LOL, I asked ... 
+ 
+
+https://www.researchgate.net/publication/226300537_Document_Structure_and_Layout_Analysis
+skew correction (tesseract?)
+
+
+https://stackoverflow.com/questions/41546181/how-to-deskew-a-scanned-text-page-with-imagemagick
+http://www.fmwconcepts.com/imagemagick/textcleaner/index.php
+
+https://archive.org/details/americandictiona01websrich/mode/2up?view=theater
+https://archive.org/details/americandictiona02websrich/page/n873/mode/2up
+
+https://archive.org/details/americanspellin00webs/page/18/mode/2up
+1829 blueback speller?
+
+https://archive.org/details/americanspelling00webs
+1809
+pg 145 "homophones"
+
+https://archive.org/details/ninediscourseson00oliv/page/90/mode/2up
+1806, christian lectures (infant baptism)
+pg 100, eight days removed as requirement - 300 AD, lost the significance of 8 and lotus birth 
+
 
 
 
