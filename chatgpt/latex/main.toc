@@ -1,0 +1,77 @@
+\contentsline {chapter}{Contents}{i}{chapter*.1}%
+\contentsline {chapter}{List of Figures}{iii}{chapter*.2}%
+\contentsline {chapter}{List of Tables}{iii}{chapter*.3}%
+\contentsline {chapter}{Preface}{1}{chapter*.5}%
+\contentsline {chapter}{\chapternumberline {1}Introduction to Language}{4}{chapter.1}%
+\precistoctext {Need for an Engineered Model}
+\contentsline {section}{\numberline {1.1}What Is Language?}{4}{section.1.1}%
+\contentsline {section}{\numberline {1.2}From Sound to Symbol}{4}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Language as an Engineered System}{5}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Why Egyptian Is Special}{5}{section.1.4}%
+\contentsline {section}{\numberline {1.5}1.4 Egyptian as an Engineered Language}{6}{section.1.5}%
+\contentsline {section}{\numberline {1.6}1.5 What Makes This Model Different?}{6}{section.1.6}%
+\contentsline {section}{\numberline {1.7}A Language of Process}{6}{section.1.7}%
+\contentsline {section}{\numberline {1.8}No ``Silent'' Determinatives}{6}{section.1.8}%
+\contentsline {section}{\numberline {1.9}Operators and Domains}{6}{section.1.9}%
+\contentsline {section}{\numberline {1.10}Spatial Structure of Meaning}{6}{section.1.10}%
+\contentsline {section}{\numberline {1.11}Semantic Compression}{7}{section.1.11}%
+\contentsline {section}{\numberline {1.12}1.6 Why This Model Matters}{7}{section.1.12}%
+\contentsline {section}{\numberline {1.13}1.7 Formalizing the Model}{7}{section.1.13}%
+\contentsline {section}{\numberline {1.14}1.8 EPOM--ESCM: The Core Framework}{8}{section.1.14}%
+\contentsline {section}{\numberline {1.15}1.9 Where This Book Goes Next}{8}{section.1.15}%
+\contentsline {section}{\numberline {1.16}Closing Thought}{8}{section.1.16}%
+\contentsline {chapter}{\chapternumberline {2}Sounds}{9}{chapter.2}%
+\precistoctext {How Air, Geometry, and the Human Voice Form Meaning}
+\contentsline {section}{\numberline {2.1}2.0 Before Symbols: Breath and Sound}{9}{section.2.1}%
+\contentsline {section}{\numberline {2.2}From Breath to Sound}{9}{section.2.2}%
+\contentsline {section}{\numberline {2.3}Sound Inventories}{9}{section.2.3}%
+\contentsline {section}{\numberline {2.4}PHOIBLE and the Top 40 Sounds Across World Languages}{10}{section.2.4}%
+\contentsline {section}{\numberline {2.5}The Top Sounds Across World Languages}{10}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Understanding the PHOIBLE Table}{17}{section.2.6}%
+\contentsline {section}{\numberline {2.7}Toward a Unified Sound Framework}{17}{section.2.7}%
+\contentsline {section}{\numberline {2.8}2.1 Vowels as Domains of Experience}{18}{section.2.8}%
+\contentsline {section}{\numberline {2.9}2.2 Basic Meaning of Five Primal Vowels}{18}{section.2.9}%
+\contentsline {section}{\numberline {2.10}A: Ascending toward coherence}{18}{section.2.10}%
+\contentsline {section}{\numberline {2.11}I: Flowing forward almost theoretically}{19}{section.2.11}%
+\contentsline {section}{\numberline {2.12}U: Chaos of an entropic world}{19}{section.2.12}%
+\contentsline {section}{\numberline {2.13}O: Profoundness and Intensity of a Domain}{20}{section.2.13}%
+\contentsline {section}{\numberline {2.14}The Glottal Stop (ʔ): The NULL Operator}{21}{section.2.14}%
+\contentsline {section}{\numberline {2.15}The Primal Vowel Pentagram}{21}{section.2.15}%
+\contentsline {section}{\numberline {2.16}2.4 Internal vs External Orientation}{23}{section.2.16}%
+\contentsline {section}{\numberline {2.17}2.5 E: The central monad}{24}{section.2.17}%
+\contentsline {section}{\numberline {2.18}2.6 The Stressed Vowel: Æ}{24}{section.2.18}%
+\contentsline {section}{\numberline {2.19}2.7 Vowel Space and Blends}{25}{section.2.19}%
+\contentsline {section}{\numberline {2.20}Blends as Lazy Loading}{25}{section.2.20}%
+\contentsline {section}{\numberline {2.21}2.8 Consonants as Operators}{25}{section.2.21}%
+\contentsline {section}{\numberline {2.22}2.8.1 Breath and Modulation Cluster}{26}{section.2.22}%
+\contentsline {section}{\numberline {2.23}H --- Breath}{26}{section.2.23}%
+\contentsline {section}{\numberline {2.24}M --- Turning}{26}{section.2.24}%
+\contentsline {section}{\numberline {2.25}2.8.2 Interface Operator}{27}{section.2.25}%
+\contentsline {section}{\numberline {2.26}N --- Interface}{27}{section.2.26}%
+\contentsline {section}{\numberline {2.27}2.8.3 Structural and Continuity Cluster}{28}{section.2.27}%
+\contentsline {section}{\numberline {2.28}T --- Horizon}{28}{section.2.28}%
+\contentsline {section}{\numberline {2.29}L --- Continuity}{28}{section.2.29}%
+\contentsline {section}{\numberline {2.30}2.8.4 Manifestation and Agency Cluster}{29}{section.2.30}%
+\contentsline {section}{\numberline {2.31}R --- Manifestation}{29}{section.2.31}%
+\contentsline {section}{\numberline {2.32}Y --- Directed Force}{29}{section.2.32}%
+\contentsline {section}{\numberline {2.33}2.8.5 Grounding and Contact Cluster}{30}{section.2.33}%
+\contentsline {section}{\numberline {2.34}B --- Foot}{30}{section.2.34}%
+\contentsline {section}{\numberline {2.35}D --- Hand}{30}{section.2.35}%
+\contentsline {section}{\numberline {2.36}2.8.6 Regulation and Limitation Cluster}{31}{section.2.36}%
+\contentsline {section}{\numberline {2.37}S --- Make / Assert}{31}{section.2.37}%
+\contentsline {section}{\numberline {2.38}G and K --- Bounds}{31}{section.2.38}%
+\contentsline {section}{\numberline {2.39}2.8.7 Special Single-Sound Operators}{32}{section.2.39}%
+\contentsline {section}{\numberline {2.40}\textbf {(sh)} --- Emotion / Affective Resonance}{32}{section.2.40}%
+\contentsline {section}{\numberline {2.41}\textbf {(ch)} --- Life Energy / Vital Force}{32}{section.2.41}%
+\contentsline {section}{\numberline {2.42}\textbf {(th)} --- Interfacial Contact / Tension Boundary}{32}{section.2.42}%
+\contentsline {section}{\numberline {2.43}\textbf {(zh)} --- Illumination / Emergent Awareness}{33}{section.2.43}%
+\contentsline {section}{\numberline {2.44}2.9 Geometry of Consonants}{33}{section.2.44}%
+\contentsline {section}{\numberline {2.45}2.10 Spatial proximity}{33}{section.2.45}%
+\contentsline {section}{\numberline {2.46}Teeth: ``(th)'' Sound as Eastern Marker}{33}{section.2.46}%
+\contentsline {section}{\numberline {2.47}Midline of Top of Mouth: ``L'' sound as Northern Marker}{34}{section.2.47}%
+\contentsline {section}{\numberline {2.48}Sound string examples}{34}{section.2.48}%
+\contentsline {section}{\numberline {2.49}HUA}{34}{section.2.49}%
+\contentsline {section}{\numberline {2.50}Den vs.~Dan}{34}{section.2.50}%
+\contentsline {section}{\numberline {2.51}Jokes}{35}{section.2.51}%
+\contentsline {section}{\numberline {2.52}Milk}{35}{section.2.52}%
+\contentsline {section}{\numberline {2.53}2.11 Summary}{35}{section.2.53}%
