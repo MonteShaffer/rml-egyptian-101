@@ -1,3 +1,36 @@
+  
+function applyTheme(theme) {
+  // theme: "night" | "classic"
+  document.documentElement.classList.toggle("theme-classic", theme === "classic");
+  localStorage.setItem("ebookTheme", theme);
+
+  const cb = document.getElementById("toggleTheme");
+  if (cb) cb.checked = (theme === "classic");
+}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   // --------- RHS TOC generator (console output for copy/paste) ----------
   function escapeHtml(s) {
     return String(s)
@@ -93,18 +126,27 @@ function computeEnumerationModel() {
   const chapters = Array.from(document.querySelectorAll("section.chapter[id]"));
   const itemsById = new Map();
 
-  chapters.forEach((chEl, chIndex0) => {
-    const chNum = chIndex0 + 1;
-    const chEnum = `${chNum}`;
+  let numberedChapterCount = 0;
+
+  chapters.forEach((chEl) => {
+    const isFront = chEl.classList.contains("frontmatter");
     const chId = chEl.id;
 
-    // chapter title from immediate h2
-    const chH = findImmediateHeading(chEl, "h2");
-    let chTitle = chH ? chH.textContent.trim() : "PLACEHOLDER";
-    if (!chH) warnMissingTitle(chId, chEnum, "h2");
+    // Determine chapter enumeration (blank for frontmatter)
+    const chEnum = isFront ? "" : String(++numberedChapterCount);
 
-    // apply enums to DOM (section + heading)
-    setEnumData(chEl, chH, chEnum);
+    // Chapter title from immediate h2
+    const chH = findImmediateHeading(chEl, "h2");
+    const chTitle = chH ? chH.textContent.trim() : "PLACEHOLDER";
+    if (!chH) warnMissingTitle(chId, chEnum || "(frontmatter)", "h2");
+
+    // Apply enum to DOM (only if numbered)
+    if (chEnum) setEnumData(chEl, chH, chEnum);
+    else {
+      // Ensure no stale enum remains if you re-run after edits
+      delete chEl.dataset.enum;
+      if (chH) delete chH.dataset.enum;
+    }
 
     itemsById.set(chId, {
       type: "chapter",
@@ -112,21 +154,30 @@ function computeEnumerationModel() {
       title: chTitle,
       headingEl: chH || null,
       el: chEl,
+      isFrontmatter: isFront,
     });
 
-    // sections: direct children of chapter with class section
+    // Sections: direct children of chapter
     const sections = Array.from(chEl.querySelectorAll(":scope > section.section[id]"));
 
     sections.forEach((secEl, secIndex0) => {
-      const secNum = secIndex0 + 1;
       const secId = secEl.id;
-      const secEnum = `${chNum}.${secNum}`;
+
+      // If chapter is unnumbered (frontmatter), we can either:
+      // A) leave section enums blank (recommended for clean frontmatter)
+      // B) still number them like "0.1" or "FM.1"
+      // We'll choose A: blank when frontmatter.
+      const secEnum = chEnum ? `${chEnum}.${secIndex0 + 1}` : "";
 
       const secH = findImmediateHeading(secEl, "h3");
-      let secTitle = secH ? secH.textContent.trim() : "PLACEHOLDER";
-      if (!secH) warnMissingTitle(secId, secEnum, "h3");
+      const secTitle = secH ? secH.textContent.trim() : "PLACEHOLDER";
+      if (!secH) warnMissingTitle(secId, secEnum || "(frontmatter)", "h3");
 
-      setEnumData(secEl, secH, secEnum);
+      if (secEnum) setEnumData(secEl, secH, secEnum);
+      else {
+        delete secEl.dataset.enum;
+        if (secH) delete secH.dataset.enum;
+      }
 
       itemsById.set(secId, {
         type: "section",
@@ -135,20 +186,26 @@ function computeEnumerationModel() {
         headingEl: secH || null,
         el: secEl,
         parentChapterId: chId,
+        isFrontmatter: isFront,
       });
 
-      // subsections: direct children of section with class subsection
+      // Subsections: direct children of section
       const subs = Array.from(secEl.querySelectorAll(":scope > section.subsection[id]"));
       subs.forEach((subEl, subIndex0) => {
-        const letter = numToLetters(subIndex0 + 1);
         const subId = subEl.id;
-        const subEnum = `${chNum}.${secNum}.${letter}`; // e.g., 1.1.a
+
+        const letter = numToLetters(subIndex0 + 1);
+        const subEnum = secEnum ? `${secEnum}.${letter}` : "";
 
         const subH = findImmediateHeading(subEl, "h4");
-        let subTitle = subH ? subH.textContent.trim() : "PLACEHOLDER";
-        if (!subH) warnMissingTitle(subId, subEnum, "h4");
+        const subTitle = subH ? subH.textContent.trim() : "PLACEHOLDER";
+        if (!subH) warnMissingTitle(subId, subEnum || "(frontmatter)", "h4");
 
-        setEnumData(subEl, subH, subEnum);
+        if (subEnum) setEnumData(subEl, subH, subEnum);
+        else {
+          delete subEl.dataset.enum;
+          if (subH) delete subH.dataset.enum;
+        }
 
         itemsById.set(subId, {
           type: "subsection",
@@ -158,6 +215,7 @@ function computeEnumerationModel() {
           el: subEl,
           parentChapterId: chId,
           parentSectionId: secId,
+          isFrontmatter: isFront,
         });
       });
     });
@@ -169,13 +227,18 @@ function computeEnumerationModel() {
 
 
 
+
+
 // ---------- Function 1: generateRHS (console output only) ----------
-// generateRHS() => uses current chapter
-// generateRHS("ch-introduction") => explicit chapter id
-// generateRHS(el) => explicit chapter element
+// ---------- Function: generateRHS (console output only) ----------
+// generateRHS()              => uses current chapter
+// generateRHS("ch-id")       => explicit chapter id
+// generateRHS(chapterEl)     => explicit chapter element
 function generateRHS(chapterElOrId) {
+  // Ensure enumeration model is up to date
   const model = computeEnumerationModel();
 
+  // Resolve chapter element
   let chapterEl = null;
   if (!chapterElOrId) {
     chapterEl = getCurrentChapterElement();
@@ -191,60 +254,59 @@ function generateRHS(chapterElOrId) {
   }
 
   const chId = chapterEl.id;
-  const chItem = model.itemsById.get(chId);
-  const chEnum = chItem?.enum || "";
-  const chTitle = chItem?.title || chId;
 
-  // Build RHS TOC entries in the order: sections then their subsections
-  const sections = Array.from(chapterEl.querySelectorAll(":scope > section.section[id]"));
+  // Enumeration and title (enum from DOM, title from model)
+  const chEnum  = chapterEl.dataset.enum || model.itemsById.get(chId)?.enum || "";
+  const chTitle = model.itemsById.get(chId)?.title || chId;
 
-  let navLines = [];
+  // Collect sections (direct children only)
+  const sections = Array.from(
+    chapterEl.querySelectorAll(":scope > section.section[id]")
+  );
+
+  const navLines = [];
 
   sections.forEach((secEl) => {
     const secId = secEl.id;
-    const secItem = model.itemsById.get(secId);
-    const secEnum = secItem?.enum || "";
-    const secTitle = secItem?.title || "PLACEHOLDER";
-/*
-    navLines.push(
-      `    <a href="#${secId}" data-id="${secEnum}" data-target="${secId}">${secEnum} ${secTitle}</a>`
-    );
-	*/
-	
-	navLines.push(
-  `    <a href="#${secId}" data-id="${secEnum}" data-target="${secId}">${secTitle}</a>`
-);
+    const secEnum  = secEl.dataset.enum || model.itemsById.get(secId)?.enum || "";
+    const secTitle = model.itemsById.get(secId)?.title || "PLACEHOLDER";
 
-    const subs = Array.from(secEl.querySelectorAll(":scope > section.subsection[id]"));
+    // Section link (TITLE ONLY; enum via data-id)
+    navLines.push(
+      `    <a href="#${secId}" data-id="${secEnum}" data-target="${secId}">${secTitle}</a>`
+    );
+
+    // Subsections (direct children only)
+    const subs = Array.from(
+      secEl.querySelectorAll(":scope > section.subsection[id]")
+    );
+
     if (subs.length) {
       navLines.push(`    <div class="toc-nest">`);
+
       subs.forEach((subEl) => {
         const subId = subEl.id;
-        const subItem = model.itemsById.get(subId);
-        const subEnum = subItem?.enum || "";
-        const subTitle = subItem?.title || "PLACEHOLDER";
-/*
+        const subEnum  = subEl.dataset.enum || model.itemsById.get(subId)?.enum || "";
+        const subTitle = model.itemsById.get(subId)?.title || "PLACEHOLDER";
+
         navLines.push(
-          `      <a href="#${subId}" data-id="${subEnum}" data-target="${subId}">${subEnum} ${subTitle}</a>`
+          `      <a href="#${subId}" data-id="${subEnum}" data-target="${subId}">${subTitle}</a>`
         );
-*/		
-	navLines.push(
-  `      <a href="#${subId}" data-id="${subEnum}" data-target="${subId}">${subTitle}</a>`
-);	
-		
-		
-		
       });
+
       navLines.push(`    </div>`);
     }
   });
 
+  // Final RHS TOC markup (paste-ready)
   const out =
 `<!-- Per-chapter RHS TOC (generated) -->
-<aside class="right-toc chapter-toc" data-for-chapter="${chId}" aria-label="Local contents for ${chEnum} ${chTitle}">
+<aside class="right-toc chapter-toc"
+       data-for-chapter="${chId}"
+       aria-label="Local contents for ${chTitle}">
   <div class="toc-title">
     <span>In this chapter</span>
-    <span class="muted toc-chapter-label">${chEnum} ${chTitle}</span>
+    <span class="muted toc-chapter-label" data-id="${chEnum}">${chTitle}</span>
   </div>
 
   <nav class="d-grid gap-1">
@@ -252,6 +314,7 @@ ${navLines.join("\n")}
   </nav>
 </aside>`;
 
+  // Console output with clear delimiters for copy/paste
   console.log(
     `===== RHS TOC START (${chId}) =====\n` +
     out +
@@ -260,6 +323,7 @@ ${navLines.join("\n")}
 
   return out;
 }
+
 
 // ---------- Function 2: generateEnumeration (modifies content headings) ----------
 function generateEnumeration() {
@@ -306,46 +370,83 @@ window.generateEnumeration = generateEnumeration;
     $scope.find(`a[href="${href}"]`).addClass("active");
   }
 
+
   // --------- Build Left TOC from chapters ----------
-  function buildLeftTOC() {
-    const $toc = $("#tocLeft").empty();
+function buildLeftTOC() {
+  const toc = document.getElementById("tocLeft");
+  if (!toc) return;
 
-    $(".chapter").each(function () {
-      const id = this.id;
-      const title = $(this).data("chapter-title") || $(this).find("h2").first().text().trim() || id;
-
-      const $a = $(`<a href="#${id}" class="toc-link">${title}</a>`);
-      $a.on("click", function (e) {
-        e.preventDefault();
-        smoothScrollToId(id);
-      });
-
-      $toc.append($a);
-    });
+  const allChapters = Array.from(document.querySelectorAll("section.chapter[id]"));
+  if (!allChapters.length) {
+    console.warn("buildLeftTOC: no section.chapter[id] found");
+    toc.innerHTML = "";
+    return;
   }
+
+  const frontmatter = allChapters.filter(ch => ch.classList.contains("frontmatter"));
+  const mainChapters = allChapters.filter(ch => !ch.classList.contains("frontmatter"));
+
+  const lines = [];
+
+  function renderChapterLink(ch) {
+    const id = ch.id;
+
+    // Title from immediate h2
+    const h2 = findImmediateHeading(ch, "h2");
+    const title = h2 ? h2.textContent.trim() : id;
+
+    // Enum from DOM (blank for frontmatter by design)
+    const enumVal = ch.dataset.enum || (h2 ? h2.dataset.enum : "") || "";
+    const dataIdAttr = enumVal ? ` data-id="${enumVal}"` : "";
+
+    lines.push(
+      `<a class="toc-chapter-link" href="#${id}"${dataIdAttr} data-target="${id}">${title}</a>`
+    );
+  }
+
+  // Front Matter first
+  if (frontmatter.length) {
+    lines.push(`<div class="toc-group-label">Front Matter</div>`);
+    frontmatter.forEach(renderChapterLink);
+  }
+
+  // Then main Chapters
+  if (mainChapters.length) {
+    lines.push(`<div class="toc-group-label">Chapters</div>`);
+    mainChapters.forEach(renderChapterLink);
+  }
+
+  toc.innerHTML = lines.join("\n");
+}
+
+
+
 
   // --------- Per-chapter RHS TOC show/hide ----------
 function showChapterTOC(chapterId) {
-  // Hide all chapter TOCs
-  document.querySelectorAll("aside.chapter-toc").forEach((el) => {
-    el.style.display = "none";
-  });
-
-  // Show the TOC for this chapter
-  const sel = `aside.chapter-toc[data-for-chapter="${chapterId}"]`;
-  const toc = document.querySelector(sel);
-  if (toc) toc.style.display = "";
-
-  // Sync LHS active chapter link (safe even if IDs contain special chars)
-  const left = document.getElementById("tocLeft");
-  if (left) {
-    left.querySelectorAll("a").forEach((a) => a.classList.remove("active"));
-
-    // Use attribute selector rather than CSS.escape dependency
-    const a = left.querySelector(`a[href="#${chapterId}"]`);
-    if (a) a.classList.add("active");
+  const tocs = Array.from(document.querySelectorAll("aside.right-toc.chapter-toc"));
+  if (!tocs.length) {
+    console.warn("showChapterTOC: no aside.right-toc.chapter-toc found");
+    return;
   }
+
+  // hide all
+  tocs.forEach((a) => a.classList.add("is-hidden"));
+
+  // show active
+  const sel = `aside.right-toc.chapter-toc[data-for-chapter="${CSS.escape(chapterId)}"]`;
+  const active = document.querySelector(sel);
+
+  if (!active) {
+    console.warn("showChapterTOC: no TOC found for chapter:", chapterId, sel);
+    return;
+  }
+
+  active.classList.remove("is-hidden");
 }
+
+
+
 
 
 
@@ -434,7 +535,280 @@ function wireChapterDetection() {
   );
 
   chapters.forEach((ch) => obs.observe(ch));
+  
+  
+  
+  
+  
+  
+ // RHS TOC visibility is JS-owned. CSS should never force-hide `.right-toc`. 
+  
+  /*
+  console.log("DEBUG: chapters found =", document.querySelectorAll("section.chapter[id]").length);
+console.log("DEBUG: RHS tocs found =", document.querySelectorAll("aside.chapter-toc").length);
+
+const firstCh = document.querySelector("section.chapter[id]");
+if (firstCh) {
+  console.log("DEBUG: showing TOC for", firstCh.id);
+  showChapterTOC(firstCh.id);
+  }
+  */
+  
+  
+
+
+
 }
+
+
+
+
+function initEpomPopover() {
+  const trigger = document.getElementById("epomLink");
+  const tpl = document.getElementById("tpl-epom");
+  if (!trigger || !tpl) return;
+
+  const getContentHtml = () => {
+    const node = tpl.content.cloneNode(true);
+    const wrap = document.createElement("div");
+    wrap.appendChild(node);
+    return wrap.innerHTML;
+  };
+
+  // eslint-disable-next-line no-undef
+  const pop = new bootstrap.Popover(trigger, {
+    html: true,
+    sanitize: false,
+    placement: "top",     // doesn't matter; we'll override position after show
+    trigger: "manual",
+    title: "EPOM–ESCM",
+    content: getContentHtml,
+    customClass: "epom-popover"
+  });
+
+  const isOpen = () => !!trigger.getAttribute("aria-describedby");
+
+  function positionPopover() {
+    const tipId = trigger.getAttribute("aria-describedby");
+    const tipEl = tipId ? document.getElementById(tipId) : null;
+    if (!tipEl) return;
+
+    // Desired anchor: just above footer
+    const footer = document.querySelector(".app-footer");
+    const footerRect = footer ? footer.getBoundingClientRect() : { top: window.innerHeight };
+
+    // Measure popover
+    const tipRect = tipEl.getBoundingClientRect();
+
+    // 50px from left edge (your requirement)
+    let left = 50;
+
+    // Just above footer with a small gap
+    const gap = 10;
+    let top = footerRect.top - tipRect.height - gap;
+
+    // Clamp within viewport (top)
+    if (top < 10) top = 10;
+
+    // Clamp right edge so it doesn't go offscreen
+    const maxLeft = window.innerWidth - tipRect.width - 10;
+    if (left > maxLeft) left = Math.max(10, maxLeft);
+
+    // Force fixed positioning
+    tipEl.style.position = "fixed";
+    tipEl.style.inset = "auto";     // neutralize Popper's inset styles if present
+    tipEl.style.top = `${Math.round(top)}px`;
+    tipEl.style.left = `${Math.round(left)}px`;
+    tipEl.style.transform = "none"; // neutralize Popper translate()
+  }
+
+  function show() {
+    pop.show();
+
+    // Wait a tick so tip exists in DOM, then position it
+    requestAnimationFrame(() => {
+      positionPopover();
+    });
+  }
+
+  function hide() {
+    pop.hide();
+  }
+
+  trigger.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (isOpen()) hide();
+    else show();
+  });
+
+  // Close on outside click, but allow selection inside
+  document.addEventListener("click", (e) => {
+    if (!isOpen()) return;
+
+    const tipId = trigger.getAttribute("aria-describedby");
+    const tipEl = tipId ? document.getElementById(tipId) : null;
+
+    const insideTrigger = trigger.contains(e.target);
+    const insidePopover = tipEl && tipEl.contains(e.target);
+
+    if (!insideTrigger && !insidePopover) hide();
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) hide();
+  });
+
+  // Reposition on resize (and if you ever change footer height)
+  window.addEventListener("resize", () => {
+    if (isOpen()) positionPopover();
+  });
+}
+
+
+
+
+
+
+function wireLocalTOCScrollSpy() {
+  const targets = Array.from(
+    document.querySelectorAll("section.section[id], section.subsection[id]")
+  );
+  if (!targets.length) return;
+
+  let currentId = null;
+
+  function setActive(id) {
+    if (!id || id === currentId) return;
+    currentId = id;
+
+    const activeChapter = getCurrentChapterElement?.();
+    const chapterId = activeChapter?.id;
+
+    document
+      .querySelectorAll("aside.chapter-toc a.active")
+      .forEach((a) => a.classList.remove("active"));
+
+    if (!chapterId) return;
+
+    const toc = document.querySelector(
+      `aside.chapter-toc[data-for-chapter="${chapterId}"]`
+    );
+    if (!toc) return;
+
+    const link = toc.querySelector(
+      `a[data-target="${CSS.escape(id)}"]`
+    );
+    if (link) link.classList.add("active");
+  }
+
+  // ✅ Compute numeric values FIRST
+  const headerOffset =
+    parseInt(getComputedStyle(document.documentElement)
+      .getPropertyValue("--header-h")) || 80;
+
+  const topMargin = headerOffset + 20; // tweak if needed
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting);
+      if (!visible.length) return;
+
+      visible.sort(
+        (a, b) => a.boundingClientRect.top - b.boundingClientRect.top
+      );
+
+      const best = visible[0]?.target;
+      if (best?.id) setActive(best.id);
+    },
+    {
+      root: null,
+      rootMargin: `-${topMargin}px 0px -60% 0px`,
+      threshold: 0.01,
+    }
+  );
+
+  targets.forEach((el) => observer.observe(el));
+
+  // Hash navigation support
+  window.addEventListener("hashchange", () => {
+    const id = location.hash.slice(1);
+    if (id) setActive(id);
+  });
+
+  if (location.hash) {
+    setActive(location.hash.slice(1));
+  }
+}
+
+
+
+
+
+
+
+/* author popover */
+
+function initAboutAuthorPopover() {
+  const trigger = document.getElementById("authorLink");
+  const tpl = document.getElementById("tpl-about-author");
+  if (!trigger || !tpl) return;
+
+  const getContentHtml = () => {
+    const node = tpl.content.cloneNode(true);
+    const wrap = document.createElement("div");
+    wrap.appendChild(node);
+    return wrap.innerHTML;
+  };
+
+  // eslint-disable-next-line no-undef
+  const pop = new bootstrap.Popover(trigger, {
+    html: true,
+    placement: "top",
+    trigger: "manual",          // we will manage show/hide for better outside-click behavior
+    title: "About the Author",
+    content: getContentHtml,
+    customClass: "about-author-popover",
+    sanitize: false             // because we're injecting trusted template HTML
+  });
+
+  function isOpen() {
+    return !!trigger.getAttribute("aria-describedby");
+  }
+
+  function toggle() {
+    if (isOpen()) pop.hide();
+    else pop.show();
+  }
+
+  // Toggle on click
+  trigger.addEventListener("click", (e) => {
+    e.preventDefault();
+    toggle();
+  });
+
+  // Close on click outside
+  document.addEventListener("click", (e) => {
+    if (!isOpen()) return;
+
+    const tipId = trigger.getAttribute("aria-describedby");
+    const tipEl = tipId ? document.getElementById(tipId) : null;
+
+    const clickedInsideTrigger = trigger.contains(e.target);
+    const clickedInsidePopover = tipEl && tipEl.contains(e.target);
+
+    if (!clickedInsideTrigger && !clickedInsidePopover) {
+      pop.hide();
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isOpen()) pop.hide();
+  });
+}
+
+
 
 
   // --------- Clipboard widget ----------
@@ -490,8 +864,49 @@ function wireChapterDetection() {
   
   
   
+  // Hide all RHS TOCs by default in JS mode; chapter detection will reveal one
+document.querySelectorAll("aside.chapter-toc").forEach(el => el.classList.add("is-hidden"));
+
+// Force-show first chapter's TOC immediately (prevents “none shown”)
+const firstCh = document.querySelector("section.chapter[id]");
+if (firstCh) showChapterTOC(firstCh.id);
+
+
+
+// Theme init (default: night)
+const saved = localStorage.getItem("ebookTheme");
+applyTheme(saved === "classic" ? "classic" : "night");
+
+// Toggle handler
+$("#toggleTheme").on("change", function () {
+  applyTheme(this.checked ? "classic" : "night");
+});
+
+
+// Bootstrap tooltips (footer acronym, etc.)
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+  // eslint-disable-next-line no-undef
+  new bootstrap.Tooltip(el, { trigger: "hover focus", html: true });
+});
+
+
+
+// Bootstrap popovers (About the Author)
+initAboutAuthorPopover();
+
+
+initEpomPopover(); 
+
+
+wireLocalTOCScrollSpy();
+
+
+
+
+  
+  
   // If you’re still using this, it’s fine, but it should not be required for RHS TOC anymore
-  wireLocalTOCActiveState();
+  // wireLocalTOCActiveState();
 	
 
     // DataTables demo (optional)

@@ -1,7 +1,8 @@
 :root{
   --header-h: 80px;
+  --footer-h: 60px;
   --left-w: 300px;
-  --right-w: 260px;
+  --right-w: var(--left-w); /* RHS matches LHS */
   --right-offset: 50px;
 
   --page-bg: #0b1220;
@@ -12,23 +13,24 @@
   --muted: rgba(255,255,255,.65);
 }
 
-/* Medium screens: shrink RHS + reduce offset */
-@media (max-width: 1400px){
-  :root{
-    --right-w: 220px;
-    --right-offset: 20px;
-  }
-}
-
-/* Smaller screens: hide RHS entirely (use in-content TOC instead) */
-@media (max-width: 1200px){
-  .js-enabled .right-toc{
-    display: none !important;
-  }
-}
-
 
 body { background: var(--page-bg); color: var(--text); }
+
+body{
+  font-family: "Libre Baskerville", Georgia, serif;
+}
+
+h2, h3, h4{
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+nav, .chapter-toc{
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+
+
+
 
 .muted{ color: var(--muted); }
 
@@ -78,18 +80,36 @@ body { background: var(--page-bg); color: var(--text); }
 
 /* Main content layout */
 
+:root{
+  --read-gutter-r: 30px;     /* your new reading gutter */
+  --rhs-w: 300px;            /* match LHS TOC width */
+  --rhs-overlay: 20px;       /* allow RHS TOC to cover only 20px of content */
+}
+
+
 .main-content{
   padding-top: calc(var(--header-h) + 18px);
+  padding-bottom: calc(var(--footer-h) + 16px);
 
-  /* move content right of fixed LHS TOC */
   margin-left: calc(var(--left-w) + 20px);
 
-  /* let RHS overlay, keep only a small buffer */
-  padding-right: calc(var(--right-offset) + 20px);
+  /* Reserve RHS TOC width, minus allowed overlay, plus reading gutter */
+  padding-right: calc(var(--right-offset) + (var(--rhs-w) - var(--rhs-overlay)) + var(--read-gutter-r));
 
-  /* optional: don't cap width while you're tuning layout */
   max-width: none;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -100,34 +120,40 @@ body { background: var(--page-bg); color: var(--text); }
   border: 1px solid var(--panel-border);
   background: rgba(255,255,255,.03);
   border-radius: 18px;
-  max-width: 980px;   /* tune to taste: 900–1100 */
+  max-width: 980px; /* tune to taste */
 }
+
 .chapter h2{ margin-bottom: 10px; }
 .chapter .chapter-subtitle{ color: var(--muted); margin-bottom: 16px; }
 
 
-/* Prefix RHS TOC links with their computed enumeration */
+/* ============================
+   RHS TOC numbering via data-id
+   ============================ */
+
 .chapter-toc a[data-id]::before{
   content: attr(data-id) " ";
   color: rgba(255,255,255,.65);
   font-variant-numeric: tabular-nums;
 }
 
+/* Slightly de-emphasize nested numbering */
 .chapter-toc .toc-nest a[data-id]::before{
   color: rgba(255,255,255,.55);
+  opacity: 0.85;
 }
 
-
-/* Show enumeration on headings without changing text */
-.chapter > h2[data-enum]::before,
-.section > h3[data-enum]::before,
-.subsection > h4[data-enum]::before{
-  content: attr(data-enum) " ";
+/* Chapter label numbering */
+.chapter-toc .toc-chapter-label[data-id]::before{
+  content: attr(data-id) " ";
   color: rgba(255,255,255,.65);
   font-variant-numeric: tabular-nums;
-  margin-right: 0.25rem;
 }
 
+
+/* ==========================================
+   Heading numbering via data-enum (no text)
+   ========================================== */
 
 .chapter > h2[data-enum],
 .section > h3[data-enum],
@@ -142,12 +168,42 @@ body { background: var(--page-bg); color: var(--text); }
 .section > h3[data-enum]::before,
 .subsection > h4[data-enum]::before{
   content: attr(data-enum);
+  color: rgba(255,255,255,.65);
+  font-variant-numeric: tabular-nums;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 /* Per-chapter RHS TOC (floats but lives inside chapter markup) */
 /* Default (no JS): show TOC inline where it is in the chapter */
+/* No JS: show TOC inline */
 .right-toc{
   display: block;
   position: static;
@@ -156,16 +212,32 @@ body { background: var(--page-bg); color: var(--text); }
   overflow: visible;
 }
 
-/* JS-enabled: float it and let JS decide which one is visible */
+/* RHS TOC panel styling */
+.right-toc{
+  width: var(--rhs-w);
+  background: rgba(20, 20, 20, 0.92); /* or match LHS exactly */
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+}
+
+/* With JS enabled: float it and hide until activated */
 .js-enabled .right-toc{
   position: fixed;
-  top: calc(var(--header-h) + var(--right-offset));
+  top: calc(var(--header-h) + var(--right-offset) + 68px); /* admin height spacing */
   right: var(--right-offset);
   width: var(--right-w);
   max-height: calc(100vh - var(--header-h) - (2 * var(--right-offset)));
   overflow: auto;
-  display: none; /* JS will show active chapter TOC */
+  z-index: 1010;
 }
+
+.js-enabled .right-toc.is-hidden{
+  display: none;
+}
+
 
 .right-toc .toc-title{
   font-size: .82rem;
@@ -187,11 +259,43 @@ body { background: var(--page-bg); color: var(--text); }
 .right-toc a:hover{ background: rgba(255,255,255,.07); }
 .right-toc a.active{ background: rgba(255,255,255,.11); }
 
+
+.right-toc .toc-title{
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.right-toc nav a{
+  line-height: 1.4;
+  padding: 2px 0;
+}
+
+
+
 .toc-nest{
   margin-left: 10px;
   padding-left: 8px;
   border-left: 1px solid rgba(255,255,255,.10);
 }
+
+
+
+.toc-group-label{
+  margin: 10px 0 6px;
+  font-size: .75rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+
+#tocLeft a[data-id]::before{
+  content: attr(data-id) " ";
+  color: rgba(255,255,255,.65);
+  font-variant-numeric: tabular-nums;
+}
+
 
 /* Widgets: takeaway callout */
 .takeaway{
@@ -257,3 +361,924 @@ body { background: var(--page-bg); color: var(--text); }
 /* Position depends on parent dialog class */
 .dialog-human .clip-btn{ left: 8px; }
 .dialog-chatgpt .clip-btn{ right: 8px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Admin panel floats above RHS TOC */
+.admin-panel{
+  position: fixed;
+  top: calc(var(--header-h) + var(--right-offset));
+  right: var(--right-offset);
+  width: var(--right-w);
+  z-index: 1020;
+
+  background: rgba(20, 20, 20, 0.92);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+}
+
+.admin-title{
+  font-size: .8rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+
+
+
+
+/* Classic reading mode */
+html.theme-classic{
+  --page-bg: #ffffff;
+  --text: rgba(0,0,0,.92);
+  --muted: rgba(0,0,0,.60);
+
+  --panel-bg: #f6f6f6;
+  --panel-border: rgba(0,0,0,.12);
+}
+
+/* Adjust common surfaces in classic mode */
+html.theme-classic body{ background: var(--page-bg); color: var(--text); }
+
+html.theme-classic .chapter{
+  background: rgba(0,0,0,.02);
+}
+
+html.theme-classic .right-toc,
+html.theme-classic .admin-panel,
+html.theme-classic .left-toc{
+  background: rgba(250,250,250,.95);
+  color: rgba(0,0,0,.88);
+}
+
+html.theme-classic .left-toc a,
+html.theme-classic .right-toc a{
+  color: rgba(0,0,0,.78);
+}
+
+html.theme-classic .chapter-toc a[data-id]::before,
+html.theme-classic .chapter-toc .toc-chapter-label[data-id]::before,
+html.theme-classic .chapter > h2[data-enum]::before,
+html.theme-classic .section > h3[data-enum]::before,
+html.theme-classic .subsection > h4[data-enum]::before{
+  color: rgba(0,0,0,.55);
+}
+
+/* Classic theme variant */
+html.theme-classic .app-footer{
+  background: rgba(250,250,250,.95);
+}
+html.theme-classic .footer-acronym{
+  color: rgba(0,0,0,.88);
+}
+
+
+
+
+
+
+
+/* Fixed footer bar */
+.app-footer{
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--footer-h);
+  z-index: 1030; /* above content; below modals */
+  border-top: 1px solid var(--panel-border);
+  background: rgba(20,20,20,.92);
+  backdrop-filter: blur(6px);
+}
+
+.footer-inner{
+  height: 100%;
+  display: grid;
+  grid-template-columns: 30% 70%;
+  align-items: center;
+
+  padding: 8px 14px;
+  box-sizing: border-box;
+}
+
+/* Left 30%: EPOM–ESCM left-justified */
+.footer-left{
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  justify-content: flex-start;
+
+  text-align: left;
+  min-width: 0;
+}
+
+/* Right 70%: centered block */
+.footer-right{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.2;
+
+  min-width: 0;
+  white-space: normal;
+  
+  max-width: 900px; /* tune */
+  margin: 0 auto;
+}
+
+
+
+
+.footer-acronym{
+  font-weight: 700;
+  letter-spacing: .04em;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.footer-acronym:focus{
+  outline: 2px solid rgba(255,255,255,.25);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+.footer-hyphen{
+  opacity: .85;
+}
+
+.footer-tagline{
+  color: var(--muted);
+  font-size: .9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Right side */
+/* Right = fixed 70% of usable region, centered */
+.footer-right{
+  flex: 0 0 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.2;
+
+  min-width: 0;          /* allow wrapping instead of forcing overflow */
+  white-space: normal;   /* IMPORTANT: let it wrap */
+}
+
+
+.footer-date{
+  opacity: .9;
+}
+
+.footer-acronym{
+  font-weight: 700;
+  letter-spacing: .06em;
+  font-size: 1.1rem;
+}
+
+.footer-date{
+  opacity: .85;
+  font-size: .8rem;
+}
+
+
+
+
+
+/* Footer author link styling */
+.author-link{
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.author-link:hover{ opacity: .9; }
+
+/* Popover sizing */
+.about-author-popover{
+  max-width: 400px; /* controls outer popover width */
+}
+
+/* Ensure popover content region scrolls if too tall */
+.about-author-popover .popover-body{
+  padding: 14px 18px; /* more horizontal space */
+}
+
+.about-author{
+  max-height: 600px;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+/* Night-mode popover (default) */
+.about-author-popover{
+	max-width: 400px;
+  box-sizing: border-box;
+  background: rgba(20,20,20,.96);
+  border: 1px solid var(--panel-border);
+  color: rgba(255,255,255,.9);
+  border-radius: 12px;
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+}
+
+.about-author-popover .popover-header{
+  background: rgba(20,20,20,.96);
+  border-bottom: 1px solid var(--panel-border);
+  color: rgba(255,255,255,.95);
+}
+
+.about-author-popover .popover-body{
+  color: rgba(255,255,255,.88);
+   padding: 16px 20px;
+  box-sizing: border-box;
+}
+
+
+/* Classic reading mode popover */
+html.theme-classic .about-author-popover{
+  background: #ffffff;
+  border-color: rgba(0,0,0,.15);
+  color: rgba(0,0,0,.9);
+}
+
+html.theme-classic .about-author-popover .popover-header{
+  background: #f6f6f6;
+  border-bottom-color: rgba(0,0,0,.12);
+  color: rgba(0,0,0,.95);
+}
+
+html.theme-classic .about-author-popover .popover-body{
+  color: rgba(0,0,0,.85);
+}
+
+
+
+
+
+
+/* EPOM–ESCM tooltip sizing */
+.epom-tooltip{
+  max-width: 500px;
+}
+
+/* Improve readability */
+.epom-tooltip .tooltip-inner{
+  padding: 16px 20px;
+  text-align: left;
+  line-height: 1.45;
+}
+
+/* Night mode (default) */
+.epom-tooltip{
+  background: rgba(20,20,20,.96);
+  color: rgba(255,255,255,.9);
+}
+
+/* Classic mode override */
+html.theme-classic .epom-tooltip{
+  background: #ffffff;
+  color: rgba(0,0,0,.9);
+}
+
+
+/* Make the footer acronym button look like your previous text */
+.epom-modal-trigger{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+.epom-modal-trigger:focus{
+  outline: 2px solid rgba(255,255,255,.25);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Modal sizing */
+.epom-modal-dialog{
+  max-width: 500px;
+}
+
+.epom-modal-body{
+  max-height: 600px;
+  overflow: auto;
+}
+
+/* Night mode (default) */
+html:not(.theme-classic) .epom-modal-content{
+  background: rgba(20,20,20,.98);
+  color: rgba(255,255,255,.9);
+  border: 1px solid var(--panel-border);
+}
+
+html:not(.theme-classic) .epom-modal-content .modal-header,
+html:not(.theme-classic) .epom-modal-content .modal-footer{
+  border-color: var(--panel-border);
+}
+
+/* Make close button visible in night mode */
+html:not(.theme-classic) .epom-modal-content .btn-close{
+  filter: invert(1) grayscale(100%);
+  opacity: .85;
+}
+
+/* Classic mode */
+html.theme-classic .epom-modal-content{
+  background: #fff;
+  color: rgba(0,0,0,.9);
+}
+
+
+/* Allow manual positioning */
+.epom-modal-dialog{
+  position: fixed;
+  max-width: 500px;
+  margin: 0;                 /* remove Bootstrap centering */
+}
+
+/* Scroll handling */
+.epom-modal-body{
+  max-height: 600px;
+  overflow: auto;
+}
+
+
+
+
+
+/* EPOM “mini-modal” popover */
+.epom-popover{
+  max-width: 520px; /* outer constraint */
+  border-radius: 12px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 10px 28px rgba(0,0,0,.45);
+}
+
+/* Make popover look like your night panels by default */
+.epom-popover.popover{
+  background: rgba(20,20,20,.96);
+  color: rgba(255,255,255,.9);
+}
+.epom-popover .popover-header{
+  background: rgba(20,20,20,.96);
+  border-bottom: 1px solid var(--panel-border);
+  color: rgba(255,255,255,.95);
+}
+.epom-popover .popover-body{
+  padding: 16px 20px;
+  color: rgba(255,255,255,.88);
+}
+
+/* Classic mode override */
+html.theme-classic .epom-popover.popover{
+  background: #fff;
+  color: rgba(0,0,0,.9);
+  border-color: rgba(0,0,0,.15);
+}
+html.theme-classic .epom-popover .popover-header{
+  background: #f6f6f6;
+  border-bottom-color: rgba(0,0,0,.12);
+  color: rgba(0,0,0,.95);
+}
+html.theme-classic .epom-popover .popover-body{
+  color: rgba(0,0,0,.85);
+}
+
+/* Scroll + selection inside */
+.epom-popover-body{
+  max-height: 600px;
+  overflow: auto;
+  user-select: text; /* key: allow highlighting/copying */
+}
+
+/* Footer acronym link styling */
+.epom-link{
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+
+/* When we manually position, don't let Popper transforms fight us */
+.epom-popover.popover{
+  will-change: top, left;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+blockquote{
+  position: relative;
+  margin: 3rem auto;
+  padding: 2.6rem 4.6rem 3.2rem 4.8rem;
+
+  max-width: 840px;
+
+  text-align: center;
+  font-style: italic;
+  line-height: 1.7;
+  font-size: 1.18rem;
+
+  color: rgba(255,255,255,.92);
+  background:
+    /* vertical accent line */
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(255,255,255,.4),
+      transparent
+    ) 1.9rem 1.4rem / 2px calc(100% - 2.8rem) no-repeat,
+    /* panel background */
+    rgba(255,255,255,.035);
+
+  border-radius: 18px;
+}
+
+/* Opening quote — top-left */
+blockquote::before{
+  content: "“";
+  position: absolute;
+  left: 2.7rem;
+  top: 0.4rem;
+
+  font-size: 5.6rem;
+  line-height: 1;
+  font-weight: 600;
+  font-family: "Georgia", "Palatino Linotype", "Book Antiqua", serif;
+
+  color: rgba(255,255,255,.28);
+  pointer-events: none;
+}
+
+/* Closing quote — bottom-right */
+blockquote::after{
+  content: "”";
+  position: absolute;
+  right: 2.6rem;
+  bottom: 0.6rem;
+
+  font-size: 5.6rem;
+  line-height: 1;
+  font-weight: 600;
+  font-family: "Georgia", "Palatino Linotype", "Book Antiqua", serif;
+
+  color: rgba(255,255,255,.28);
+  pointer-events: none;
+}
+
+/* Normalize paragraph */
+blockquote p{
+  margin: 0;
+}
+
+
+html.theme-classic blockquote{
+  color: rgba(0,0,0,.88);
+  background:
+    linear-gradient(
+      to bottom,
+      transparent,
+      rgba(0,0,0,.35),
+      transparent
+    ) 1.9rem 1.4rem / 2px calc(100% - 2.8rem) no-repeat,
+    #f8f8f8;
+}
+
+html.theme-classic blockquote::before,
+html.theme-classic blockquote::after{
+  color: rgba(0,0,0,.28);
+}
+
+
+
+
+
+
+.chapter{
+  max-width: 980px;
+}
+
+
+/* Ensure links have left padding for the triangle */
+.chapter-toc nav a{
+  position: relative;
+  padding-left: 1.4rem; /* a bit more room for heavier icon */
+}
+
+/* Heavier triangle before enum */
+.chapter-toc nav a::after{
+  content: "▶";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  font-size: 0.85rem;   /* slightly smaller so it doesn’t overpower text */
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Nested items: slightly softer */
+.chapter-toc .toc-nest a::after{
+  opacity: 0.55;
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Active item: strongest emphasis */
+.chapter-toc a.active::after{
+  opacity: 1;
+}
+
+
+.chapter-toc nav a::after{
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+
+
+
+
+/* Offset anchor scrolling to account for fixed header */
+section.chapter[id],
+section.section[id],
+section.subsection[id]{
+  scroll-margin-top: 100px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Give chapters breathing room so they don't visually run together */
+:root{
+  --chapter-gap: 500px;
+}
+
+.chapter{
+  margin-bottom: var(--chapter-gap);
+}
+
+
+
+
+/* Chapter-end ornament: Egyptian Owl (G17) */
+.chapter{
+  position: relative;
+}
+
+.chapter::after{
+  content: "𓅓 𓅓 𓅓  𓅓 𓅓 𓅓  𓅓 𓅓 𓅓";
+  display: block;
+
+  text-align: center;
+  margin: 140px 0;
+
+  font-size: 1.6rem;          /* adjust to taste */
+  letter-spacing: 0;
+
+  color: rgba(255,255,255,.35);
+  pointer-events: none;
+}
+
+
+html.theme-classic .chapter::after{
+  color: rgba(0,0,0,.35);
+}
+
+
+
+
+
+
+
+
+/* RHS TOC active highlight */
+/* Base RHS TOC links */
+.chapter-toc a{
+  color: rgba(255,255,255,.82);
+  transition: color 120ms ease;
+}
+
+/* Active item: soft yellow-grey */
+.chapter-toc a.active{
+  color: var(--toc-active, #d6d1a8);
+}
+
+/* Triangle inherits the active color */
+.chapter-toc a::after{
+  color: inherit;
+}
+
+
+
+.chapter-toc .toc-nest a.active{
+  color: #cfcaa0;
+}
+
+
+
+
+html.theme-classic .chapter-toc a{
+  color: rgba(0,0,0,.75);
+}
+
+html.theme-classic .chapter-toc a.active{
+  color: #7a6f2a; /* olive-grey */
+}
+
+
+
+
+/* RHS TOC — remove pill / background styling completely */
+.chapter-toc a,
+.chapter-toc a.active{
+  background: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Base color */
+.chapter-toc a{
+  color: rgba(255,255,255,.82);
+}
+
+/* Active item: soft yellow-grey only */
+.chapter-toc a.active{
+  color: var(--toc-active, #d6d1a8);
+}
+
+/* Triangle inherits color (no background) */
+.chapter-toc a::after{
+  color: inherit;
+  background: none;
+}
+
+
+.chapter-toc .active,
+.chapter-toc .active:hover,
+.chapter-toc .active:focus{
+  background-color: transparent !important;
+}
+
+
+html.theme-classic .chapter-toc a{
+  color: rgba(0,0,0,.75);
+}
+
+html.theme-classic .chapter-toc a.active{
+  color: #7a6f2a;
+}
+
+
+
+
+/* Add breathing room after each subsection */
+.section{
+  margin-bottom: 100px;
+}
+
+
+
+/* Add breathing room after each subsection */
+.subsection{
+  margin-bottom: 30px;
+}
+
+
+
+
+
+
+main img{
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* Main figure container */
+.figure-main{
+  margin: 3rem auto 3.5rem;
+  max-width: 860px; /* keeps images from getting too wide */
+
+  text-align: center;
+}
+
+/* Image itself */
+.figure-main img{
+  margin: 0 auto;
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.03);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.12),
+    0 10px 28px rgba(0,0,0,.45);
+
+  padding: 8px;
+}
+
+
+
+.figure-main figcaption{
+  margin-top: 1rem;
+  font-size: .95rem;
+  line-height: 1.45;
+
+  color: var(--muted);
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Caption title */
+.figure-main figcaption strong{
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+  color: rgba(255,255,255,.92);
+}
+
+
+html.theme-classic .figure-main img{
+  background: #fff;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.15),
+    0 8px 24px rgba(0,0,0,.18);
+}
+
+html.theme-classic .figure-main figcaption{
+  color: rgba(0,0,0,.6);
+}
+
+html.theme-classic .figure-main figcaption strong{
+  color: rgba(0,0,0,.85);
+}
+
+
+
+/* Caption container */
+.figure-main figcaption{
+  margin-top: 1rem;
+
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+
+  padding-left: 50px;
+  padding-right: 50px;
+
+  text-align: left;
+  font-size: .95rem;
+  line-height: 1.45;
+
+  color: var(--muted);
+}
+
+/* Caption title flows inline */
+.figure-main figcaption strong{
+  font-weight: 600;
+  color: rgba(255,255,255,.92);
+}
+
+.figure-main figcaption strong{
+  display: inline !important;
+}
+
+
+
+html.theme-classic .figure-main figcaption{
+  color: rgba(0,0,0,.6);
+}
+
+html.theme-classic .figure-main figcaption strong{
+  color: rgba(0,0,0,.85);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* External wiki/source links */
+/* External wiki/source links */
+a.wiki{
+  color: var(--link, #9fc5ff);
+  text-decoration: none;
+  text-underline-offset: 2px;
+}
+
+/* External-link indicator */
+a.wiki::after{
+  content: "↗";
+  margin-left: 0;        /* closer to text */
+  font-size: 0.8em;           /* slightly smaller */
+  vertical-align: super;      /* nudges it upward */
+  opacity: 0.7;
+
+  text-decoration: none;      /* ← prevent underline */
+  pointer-events: none;
+}
+
+
+a.wiki:hover::after{
+  opacity: 1;
+}
+
+html.theme-classic a.wiki{
+  color: #2b5dab;
+}
+
+
+
+
+
+
+/* Base paragraph text */
+p{
+  font-size: 16px;
+  line-height: 1.6; /* recommended for readability at 14px */
+}
+
+main .content{
+  padding-right: 30px;
+}
+
+
+
+
+
+
+
+aside.chapter-toc.is-hidden{
+  display: none !important;
+}
+
+
+
