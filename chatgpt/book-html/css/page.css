@@ -1284,3 +1284,62 @@ aside.chapter-toc.is-hidden{
 .right-toc.chapter-toc.is-hidden{ display:none !important; }
 
 
+
+/* Two-up figure layout */
+.figure-pair{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+
+  /* center the pair within main reading column */
+  justify-items: center;
+  align-items: start;
+
+  margin: 18px 0 22px;
+}
+
+/* stack on smaller screens */
+@media (max-width: 900px){
+  .figure-pair{
+    grid-template-columns: 1fr;
+  }
+}
+
+/* each sub-figure: keep your normal figure styling, just constrained */
+.figure-pair .figure-main{
+  width: 100%;
+  max-width: 520px; /* tune to taste */
+  margin: 0;        /* grid handles spacing */
+}
+
+/* ensure image is centered */
+.figure-pair .figure-main img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  height: auto;
+}
+
+/* subcaptions: normal figcaption behavior, but smaller + centered */
+.figure-main.figure-sub figcaption{
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+
+  text-align: center;
+  font-size: 0.85rem;
+
+  /* keep some breathing room; not the big 50px gutters */
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+/* keep strong inline (no forced line break) */
+.figure-main.figure-sub figcaption strong{
+  display: inline !important;
+}
+
+
+
+

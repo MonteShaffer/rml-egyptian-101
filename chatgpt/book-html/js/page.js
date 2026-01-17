@@ -438,7 +438,7 @@ function showChapterTOC(chapterId) {
   const active = document.querySelector(sel);
 
   if (!active) {
-    console.warn("showChapterTOC: no TOC found for chapter:", chapterId);
+    console.warn("showChapterTOC: no TOC found for chapter:", chapterId,"\n\n Maybe run: generateRHS('"+chapterId+"');");
     return;
   }
 
